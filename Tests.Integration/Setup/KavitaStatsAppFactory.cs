@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using Api;
-using Api.Common.Configurations;
-using Api.Infrastructure.Common.Constants;
-using Api.Infrastructure.Data;
+using Application;
+using Application.Common.Configurations;
+using Application.Common.Constants;
+using Application.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;

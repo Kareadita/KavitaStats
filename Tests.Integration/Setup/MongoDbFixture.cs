@@ -1,6 +1,6 @@
 ﻿using System;
-using Api.Common.Configurations;
-using Api.Infrastructure.Data;
+using Application.Common.Configurations;
+using Application.Infrastructure.Data;
 using Microsoft.Extensions.Options;
 using Xunit;
 
