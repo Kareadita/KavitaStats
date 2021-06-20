@@ -2,25 +2,44 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using Api;
+using Api.Common.Configurations;
+using Api.Infrastructure.Common.Constants;
+using Api.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Tests.Integration.Setup
 {
     public class KavitaStatsAppFactory : WebApplicationFactory<Startup>
     {
+        private readonly MongoDbFixture _dbFixture;
+
+        public KavitaStatsAppFactory(MongoDbFixture dbFixture)
+        {
+            _dbFixture = dbFixture;
+        }
+
+        private const string TestApiKey = "test-api-key";
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("Test");
 
             builder.ConfigureAppConfiguration((context, config) =>
             {
-                
+                config.AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>(AppConstants.ApikeyName, TestApiKey),
+                    new KeyValuePair<string, string>(
+                        $"{nameof(MongoDbOptions)}:Connection", _dbFixture.MongoOptions.Connection),
+                    new KeyValuePair<string, string>(
+                        $"{nameof(MongoDbOptions)}:DatabaseName", _dbFixture.MongoOptions.DatabaseName),
+                });
             });
         }
-        
+
         public HttpClient CreateAppClient(WebApplicationFactoryClientOptions options = null)
         {
             var opts = options ?? new WebApplicationFactoryClientOptions
@@ -29,7 +48,13 @@ namespace Tests.Integration.Setup
                 BaseAddress = new Uri($"https://localhost:5002")
             };
 
-            return base.CreateClient(opts);
+            var client = base.CreateClient(opts);
+
+            client.DefaultRequestHeaders.Add(AppConstants.AuthHeaderKey, TestApiKey);
+
+            return client;
         }
+
+        public StatsDbContext GetDbContext() => Services.GetRequiredService<StatsDbContext>();
     }
 }

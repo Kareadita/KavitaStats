@@ -1,0 +1,18 @@
+﻿using Api.Domain.InstallationStatistics;
+using MongoDB.Bson.Serialization;
+
+namespace Api.Infrastructure.Data.Mappings
+{
+    public class UsageInfoMapConfig
+    {
+        public static void ConfigureMap()
+        {
+            BsonClassMap.RegisterClassMap<UsageInfo>(cm =>
+            {
+                cm.MapMember(c => c.UsersCount);
+                cm.MapIdMember(c => c.FileTypes);
+                cm.MapProperty(c => c.LibraryTypesCreated);
+            });
+        }
+    }
+}

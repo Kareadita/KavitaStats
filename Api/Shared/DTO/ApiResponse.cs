@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Api.DTO
+namespace Api.Shared.DTO
 {
     public class ApiResponse<T> : ApiResponse
     {
