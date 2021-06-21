@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Application.Common.Dtos;
 using Application.Infrastructure.Data;
 using MediatR;
+using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Features.InstallationStats
@@ -26,9 +27,11 @@ namespace Application.Features.InstallationStats
             {
                 if (request.Statistics is null || string.IsNullOrEmpty(request.Statistics.InstallId))
                 {
+                    _logger.LogError("InstallId was not supplied");
                     return Result.Fail("InstallId is required");
                 }
 
+                _logger.LogDebug("Handling DB Update");
                 await _dbContext.Installations.InsertOneAsync(request.Statistics, null, cancellationToken);
 
                 //Transactions are not working with standalone DB/local docker

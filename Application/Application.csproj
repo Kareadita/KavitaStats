@@ -11,4 +11,27 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="_output\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="_output\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="_output\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="_output\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="_output\web.config" />
+      <_ContentIncludedByDefault Remove="_output\Application.deps.json" />
+      <_ContentIncludedByDefault Remove="_output\Application.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="_output\appsettings.Development.json" />
+    </ItemGroup>
+
 </Project>
