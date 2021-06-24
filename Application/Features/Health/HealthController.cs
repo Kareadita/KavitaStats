@@ -5,7 +5,6 @@ namespace Application.Features.Health
 {
     public class HealthController : ApiKeyController
     {
-        [AllowAno
         [HttpGet]
         public ActionResult Get() => Ok();
     }
