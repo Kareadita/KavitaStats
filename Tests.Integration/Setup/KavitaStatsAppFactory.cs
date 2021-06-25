@@ -44,7 +44,7 @@ namespace Tests.Integration.Setup
         {
             var opts = options ?? new WebApplicationFactoryClientOptions
             {
-                AllowAutoRedirect = false,
+                AllowAutoRedirect = true,
                 BaseAddress = new Uri($"http://localhost:5003")
             };
 

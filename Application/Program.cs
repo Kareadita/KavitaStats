@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -12,8 +14,10 @@ namespace Application
 {
     public class Program
     {
+        private static int _httpPort;
         public static void Main(string[] args)
         {
+            _httpPort = GetPort(GetAppSettingFilename());
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -32,9 +36,46 @@ namespace Application
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseKestrel((opts) =>
+                    {
+                        opts.ListenAnyIP(_httpPort, options =>
+                        {
+                            options.Protocols = HttpProtocols.Http1AndHttp2;
+                        });
+                    });
+                    
+                    
+                    
                     webBuilder
                         .UseConfiguration(Configuration)
                         .UseStartup<Startup>();
                 });
+        
+        private static string GetAppSettingFilename()
+        {
+            var isDevelopment = Environment == Environments.Development;
+            return "appsettings" + (isDevelopment ? ".Development" : "") + ".json";
+        }
+        
+        private static int GetPort(string filePath)
+        {
+            const int defaultPort = 5002;
+
+            try {
+                var json = File.ReadAllText(filePath);
+                var jsonObj = JsonSerializer.Deserialize<dynamic>(json);
+                const string key = "Port";
+                
+                if (jsonObj.TryGetProperty(key, out JsonElement tokenElement))
+                {
+                    return tokenElement.GetInt32();
+                }
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Error writing app settings: " + ex.Message);
+            }
+
+            return defaultPort;
+        }
     }
 }
