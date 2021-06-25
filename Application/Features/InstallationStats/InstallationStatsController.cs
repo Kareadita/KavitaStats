@@ -19,8 +19,8 @@ namespace Application.Features.InstallationStats
         public async Task<IActionResult> Add([FromBody] InstallationStatistics statistics) =>
             ReturnResult(await _mediator.Send(new Create.Command(statistics)));
 
-        [HttpGet]
-        public async Task<IActionResult> Get() =>
-            ReturnResult(await _mediator.Send(new GetAll.Query()));
+        // [HttpGet]
+        // public async Task<IActionResult> Get() =>
+        //     ReturnResult(await _mediator.Send(new GetAll.Query()));
     }
 }

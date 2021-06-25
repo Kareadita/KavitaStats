@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MediatR;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Application
 {
@@ -51,6 +52,11 @@ namespace Application
                     }
                 });
             });
+            
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.All;
+            });
 
             services.AddMediatR(typeof(Startup));
 
@@ -69,7 +75,7 @@ namespace Application
 
             app.UseCustomExceptionHandler();
 
-            app.UseHttpsRedirection();
+            app.UseForwardedHeaders();
 
             app.UseRouting();
 
