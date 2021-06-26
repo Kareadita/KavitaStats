@@ -1,16 +1,17 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Common.Dtos;
+using Application.Domain.InstallationStatistics;
 using Application.Infrastructure.Data;
 using MediatR;
-using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 
 namespace Application.Features.InstallationStats
 {
-    public static class Create
+    public static class CreateOrUpdate
     {
-        public record Command (Domain.InstallationStatistics.InstallationStatistics Statistics) : IRequest<Result>;
+        public record Command (InstallationStatistics Statistics) : IRequest<Result>;
 
         public class Handler : IRequestHandler<Command, Result>
         {
@@ -31,7 +32,26 @@ namespace Application.Features.InstallationStats
                     return Result.Fail("InstallId is required");
                 }
 
-                _logger.LogDebug("Handling DB Update");
+                var filter = Builders<InstallationStatistics>.Filter
+                    .Eq(nameof(InstallationStatistics.InstallId), request.Statistics.InstallId);
+
+                var query = await _dbContext.Installations
+                    .FindAsync(filter, null, cancellationToken);
+
+                var install = await query.SingleOrDefaultAsync(cancellationToken);
+
+                if (install is not null)
+                {
+                    request.Statistics.Id = install.Id;
+
+                    _logger.LogDebug("Handling DB Update");
+                    await _dbContext.Installations.ReplaceOneAsync(filter, request.Statistics,
+                        cancellationToken: cancellationToken);
+
+                    return Result.Ok();
+                }
+
+                _logger.LogDebug("Handling DB Insert");
                 await _dbContext.Installations.InsertOneAsync(request.Statistics, null, cancellationToken);
 
                 //Transactions are not working with standalone DB/local docker
