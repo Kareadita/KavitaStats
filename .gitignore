@@ -442,7 +442,6 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 
 # App specific
-appsettings.json
 /API/kavita.db
 /API/kavita.db-shm
 /API/kavita.db-wal
