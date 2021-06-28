@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Sentry;
 
 namespace Application
 {
@@ -43,9 +44,19 @@ namespace Application
                             options.Protocols = HttpProtocols.Http1AndHttp2;
                         });
                     });
-                    
-                    
-                    
+
+                    webBuilder.UseSentry(options =>
+                    {
+                        options.Dsn = "https://8a83109b985c414d890d2335dd9944c7@o641015.ingest.sentry.io/5824746";
+                        options.MaxBreadcrumbs = 200;
+                        options.AttachStacktrace = true;
+                        options.Debug = false;
+                        options.SendDefaultPii = false;
+                        options.DiagnosticLevel = SentryLevel.Debug;
+                        options.ShutdownTimeout = TimeSpan.FromSeconds(5);
+                        options.Release = Environment;
+                    });
+
                     webBuilder
                         .UseConfiguration(Configuration)
                         .UseStartup<Startup>();

@@ -53,6 +53,8 @@ namespace Application
                 });
             });
             
+            services.AddCors();
+            
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.All;
@@ -78,6 +80,8 @@ namespace Application
             app.UseForwardedHeaders();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
