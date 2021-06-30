@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using Application.Common.Constants;
 using Application.Common.Extensions;
@@ -59,7 +60,6 @@ namespace Application
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.All;
-                //options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
             });
             
 
@@ -84,6 +84,23 @@ namespace Application
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
+            app.Use(async (context, next) =>
+            {
+                // Do loging
+                // Do work that doesn't write to the Response.
+                Console.WriteLine($"{context.Request.Method} {context.Request.Path}");
+                Console.WriteLine("Headers");
+                foreach (var keyValuePair in context.Request.Headers)
+                {
+                    Console.WriteLine($"{keyValuePair.Key}: {keyValuePair.Value}");
+                }
+
+                Console.WriteLine($"Content Type: {context.Request.ContentType}");
+                
+                await next.Invoke();
+                // Do logging or other work that doesn't write to the Response.
             });
             
 
