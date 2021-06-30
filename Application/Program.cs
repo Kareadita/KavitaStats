@@ -70,7 +70,7 @@ namespace Application
         
         private static int GetPort(string filePath)
         {
-            const int defaultPort = 5002;
+            const int defaultPort = 5001;
 
             try {
                 var json = File.ReadAllText(filePath);

@@ -1,3 +1,5 @@
+using System;
+using System.Net;
 using Application.Common.Constants;
 using Application.Common.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -59,6 +61,7 @@ namespace Application
             {
                 options.ForwardedHeaders = ForwardedHeaders.All;
             });
+            
 
             services.AddMediatR(typeof(Startup));
 
@@ -77,7 +80,29 @@ namespace Application
 
             app.UseCustomExceptionHandler();
 
-            app.UseForwardedHeaders();
+            //app.UseForwardedHeaders();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
+            app.Use(async (context, next) =>
+            {
+                // Do loging
+                // Do work that doesn't write to the Response.
+                Console.WriteLine($"{context.Request.Method} {context.Request.Path}");
+                Console.WriteLine("Headers");
+                foreach (var keyValuePair in context.Request.Headers)
+                {
+                    Console.WriteLine($"{keyValuePair.Key}: {keyValuePair.Value}");
+                }
+
+                Console.WriteLine($"Content Type: {context.Request.ContentType}");
+                
+                await next.Invoke();
+                // Do logging or other work that doesn't write to the Response.
+            });
+            
 
             app.UseRouting();
 
