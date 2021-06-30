@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MediatR;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Logging;
 
 namespace Application
 {
@@ -62,6 +63,12 @@ namespace Application
                 options.ForwardedHeaders = ForwardedHeaders.All;
             });
             
+            services.AddLogging(loggingBuilder =>
+            {
+                var loggingSection = Configuration.GetSection("Logging");
+                loggingBuilder.AddFile(loggingSection);
+            });
+            
 
             services.AddMediatR(typeof(Startup));
 
@@ -91,18 +98,18 @@ namespace Application
                 // Do loging
                 // Do work that doesn't write to the Response.
                 Console.WriteLine($"{context.Request.Method} {context.Request.Path}");
-                Console.WriteLine("Headers");
+                Console.WriteLine("\tHeaders");
                 foreach (var keyValuePair in context.Request.Headers)
                 {
-                    Console.WriteLine($"{keyValuePair.Key}: {keyValuePair.Value}");
+                    Console.WriteLine($"\t\t{keyValuePair.Key}: {keyValuePair.Value}");
                 }
 
-                Console.WriteLine($"Content Type: {context.Request.ContentType}");
+                Console.WriteLine($"\tContent Type: {context.Request.ContentType}");
                 
                 await next.Invoke();
                 // Do logging or other work that doesn't write to the Response.
             });
-            
+
 
             app.UseRouting();
 

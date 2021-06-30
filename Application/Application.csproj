@@ -8,6 +8,7 @@
         <PackageReference Include="MediatR" Version="9.0.0" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
         <PackageReference Include="MongoDB.Driver" Version="2.13.0-beta1" />
+        <PackageReference Include="NReco.Logging.File" Version="1.1.1" />
         <PackageReference Include="Sentry" Version="3.6.0" />
         <PackageReference Include="Sentry.AspNetCore" Version="3.6.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
