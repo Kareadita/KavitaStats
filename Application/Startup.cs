@@ -1,3 +1,4 @@
+using System.Net;
 using Application.Common.Constants;
 using Application.Common.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -58,7 +59,9 @@ namespace Application
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.All;
+                //options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
             });
+            
 
             services.AddMediatR(typeof(Startup));
 
@@ -77,7 +80,12 @@ namespace Application
 
             app.UseCustomExceptionHandler();
 
-            app.UseForwardedHeaders();
+            //app.UseForwardedHeaders();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+            
 
             app.UseRouting();
 
