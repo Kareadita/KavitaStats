@@ -22,6 +22,7 @@ namespace Application.Infrastructure.Data
             ServerInfoMapConfig.ConfigureMap();
             ClientInfoMapConfig.ConfigureMap();
             UsageInfoMapConfig.ConfigureMap();
+            LibraryInfoMapConfig.ConfigureMap();
         }
 
         private static void RegisterConventions()
