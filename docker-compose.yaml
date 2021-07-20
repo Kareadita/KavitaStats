@@ -12,6 +12,12 @@ services:
   
   kavitastats:
     image: kizaing/kavitastats:latest
+    environment:
+      DB_USER: root
+      DB_PASS: rootpassword
+      DB_NAME: kavitaStats
+      API_KEY: putapikeyhere
+      ALLOWED_HOSTS: stats.kavitareader.com;kavitareader.com;localhost
     ports:
       - "5001:5001"
     depends_on:
