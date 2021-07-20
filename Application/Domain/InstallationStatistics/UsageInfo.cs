@@ -8,15 +8,16 @@ namespace Application.Domain.InstallationStatistics
         public UsageInfo()
         {
             FileTypes = new HashSet<string>();
-            LibraryTypesCreated = new HashSet<LibInfo>();
+            LibraryTypesCreated = new HashSet<LibraryInfo>();
         }
-
+        
         public int UsersCount { get; set; }
         public IEnumerable<string> FileTypes { get; set; }
-        public IEnumerable<LibInfo> LibraryTypesCreated { get; set; }
+        public IEnumerable<LibraryInfo> LibraryTypesCreated { get; set; }
+        
     }
 
-    public class LibInfo
+    public class LibraryInfo
     {
         public LibraryType Type { get; set; }
         public int Count { get; set; }

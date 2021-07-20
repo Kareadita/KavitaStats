@@ -10,11 +10,13 @@ namespace Application.Infrastructure.Data.Mappings
             BsonClassMap.RegisterClassMap<ServerInfo>(cm =>
             {
                 cm.MapMember(c => c.Os);
-                cm.MapIdMember(c => c.Culture);
-                cm.MapProperty(c => c.BuildBranch);
-                cm.MapProperty(c => c.KavitaVersion);
-                cm.MapProperty(c => c.DotNetVersion);
-                cm.MapProperty(c => c.RunTimeVersion);
+                cm.MapMember(c => c.Culture);
+                cm.MapMember(c => c.BuildBranch);
+                cm.MapMember(c => c.KavitaVersion);
+                cm.MapMember(c => c.DotNetVersion);
+                cm.MapMember(c => c.RunTimeVersion);
+                cm.MapMember(c => c.IsDocker);
+                cm.MapMember(c => c.NumOfCores);
             });
         }
     }

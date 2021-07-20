@@ -11,6 +11,7 @@ namespace Application.Common.Extensions
         {
             services.Configure<MongoDbOptions>(configuration.GetSection(nameof(MongoDbOptions)));
             
+            
             return services;
         }
 
