@@ -9,12 +9,13 @@ namespace Application.Infrastructure.Data.Mappings
         {
             BsonClassMap.RegisterClassMap<ClientInfo>(cm =>
             {
-                cm.MapProperty(c => c.ScreenResolution);
-                cm.MapProperty(c => c.KavitaUiVersion);
-                cm.MapProperty(c => c.CollectedAt);
+                cm.MapMember(c => c.ScreenResolution);
+                cm.MapMember(c => c.KavitaUiVersion);
+                cm.MapMember(c => c.CollectedAt);
                 cm.MapMember(c => c.PlatformType);
-                cm.MapProperty(c => c.Browser);
-                cm.MapProperty(c => c.Os);
+                cm.MapMember(c => c.Browser);
+                cm.MapMember(c => c.Os);
+                cm.MapMember(c => c.UsingDarkTheme);
             });
         }
     }

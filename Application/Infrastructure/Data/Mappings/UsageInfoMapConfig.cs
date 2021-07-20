@@ -10,7 +10,7 @@ namespace Application.Infrastructure.Data.Mappings
             BsonClassMap.RegisterClassMap<UsageInfo>(cm =>
             {
                 cm.MapMember(c => c.UsersCount);
-                cm.MapIdMember(c => c.FileTypes);
+                cm.MapProperty(c => c.FileTypes);
                 cm.MapProperty(c => c.LibraryTypesCreated);
             });
         }
