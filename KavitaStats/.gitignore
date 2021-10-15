@@ -487,6 +487,8 @@ ssl/
 # App specific
 appsettings.json
 *.db
+*.db-shm
+*.db-wal
 _temp/
 _output/
 wwwroot/
