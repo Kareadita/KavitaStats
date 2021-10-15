@@ -28,6 +28,11 @@ namespace KavitaStats.Entities
         /// Version of Kavita
         /// </summary>
         public string KavitaVersion { get; set; }
+        /// <summary>
+        /// Last time we heard from the Kavita instance
+        /// </summary>
+        /// <remarks>This is required because if nothing changes on the User instance, then Last Modified wont change.</remarks>
+        public DateTime LastUpdated { get; set; }
 
         public DateTime Created { get; set; }
         public DateTime LastModified { get; set; }

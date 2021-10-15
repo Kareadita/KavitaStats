@@ -37,6 +37,7 @@ namespace KavitaStats.Controllers
                 existingRecord.DotnetVersion = dto.DotnetVersion;
                 existingRecord.IsDocker = dto.IsDocker;
                 existingRecord.KavitaVersion = dto.KavitaVersion;
+                existingRecord.LastUpdated = DateTime.Now;
             }
             else
             {
@@ -45,7 +46,8 @@ namespace KavitaStats.Controllers
                     InstallId = dto.InstallId,
                     DotnetVersion = dto.DotnetVersion,
                     IsDocker = dto.IsDocker,
-                    KavitaVersion = dto.KavitaVersion
+                    KavitaVersion = dto.KavitaVersion,
+                    LastUpdated = DateTime.Now
                 });
             }
 
