@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using KavitaStats.Attributes;
 using KavitaStats.Data;
-using KavitaStats.DTOs;
 using KavitaStats.DTOs.V1;
 using KavitaStats.Entities;
 using Microsoft.AspNetCore.Mvc;

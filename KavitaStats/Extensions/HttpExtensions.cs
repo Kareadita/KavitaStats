@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using KavitaStats.Data.Helpers;
@@ -28,8 +29,8 @@ namespace KavitaStats.Extensions
         /// <param name="content">If byte[] is null or empty, will only add cache-control</param>
         public static void AddCacheHeader(this HttpResponse response, byte[] content)
         {
-            if (content == null || content.Length <= 0) return;
-            using var sha1 = new System.Security.Cryptography.SHA256CryptoServiceProvider();
+            if (content is not {Length: > 0}) return;
+            using var sha1 = SHA256.Create();
             response.Headers.Add("ETag", string.Concat(sha1.ComputeHash(content).Select(x => x.ToString("X2"))));
         }
 
@@ -40,8 +41,8 @@ namespace KavitaStats.Extensions
         /// <param name="filename"></param>
         public static void AddCacheHeader(this HttpResponse response, string filename)
         {
-            if (filename == null || filename.Length <= 0) return;
-            using var sha1 = new System.Security.Cryptography.SHA256CryptoServiceProvider();
+            if (filename is not {Length: > 0}) return;
+            using var sha1 = SHA256.Create();
             response.Headers.Add("ETag", string.Concat(sha1.ComputeHash(Encoding.UTF8.GetBytes(filename)).Select(x => x.ToString("X2"))));
         }
 

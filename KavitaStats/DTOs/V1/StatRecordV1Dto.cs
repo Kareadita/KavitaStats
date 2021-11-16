@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace KavitaStats.DTOs.V1
 {
     /// <summary>
-    /// This is for v1 version of the API for versions of Kavita < v0.4.9
+    /// This is for v1 version of the API for versions of Kavita less than v0.4.9
     /// </summary>
     public class StatRecordV1Dto
     {
