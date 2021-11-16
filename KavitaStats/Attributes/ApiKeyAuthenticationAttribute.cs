@@ -12,7 +12,9 @@ namespace KavitaStats.Attributes
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (!context.HttpContext.Request.Headers.TryGetValue("x-api-key", out var extractedApiKey))
+            // Try for the v1 implementation
+            context.HttpContext.Request.Headers.TryGetValue("api-key", out var extractedApiKey);
+            if (string.IsNullOrEmpty(extractedApiKey) && !context.HttpContext.Request.Headers.TryGetValue("x-api-key", out extractedApiKey))
             {
                 context.Result = new ContentResult
                 {
