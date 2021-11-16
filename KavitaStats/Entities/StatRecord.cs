@@ -29,6 +29,10 @@ namespace KavitaStats.Entities
         /// </summary>
         public string KavitaVersion { get; set; }
         /// <summary>
+        /// Number of Cores on the machine
+        /// </summary>
+        public int NumOfCores { get; set; }
+        /// <summary>
         /// Last time we heard from the Kavita instance
         /// </summary>
         /// <remarks>This is required because if nothing changes on the User instance, then Last Modified wont change.</remarks>
