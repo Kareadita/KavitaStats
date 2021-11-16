@@ -108,7 +108,7 @@ namespace KavitaStats
                     .AllowAnyMethod()
                     .AllowCredentials() // For SignalR token query param (if using)
                     .WithOrigins("http://localhost:4200")
-                    .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key"));
+                    .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key"));
             }
             
             app.UseResponseCaching();
