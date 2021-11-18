@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace KavitaStats.Extensions
 {
@@ -33,7 +34,11 @@ namespace KavitaStats.Extensions
 
         private static void AddLogging(this IServiceCollection services, IConfiguration config)
         {
-          services.AddLogging();
+          services.AddLogging(loggingBuilder =>
+          {
+              var loggingSection = config.GetSection("Logging");
+              loggingBuilder.AddFile(loggingSection);
+          });
         }
     }
 }

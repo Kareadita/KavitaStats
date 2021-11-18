@@ -21,5 +21,9 @@
         /// Version of Kavita
         /// </summary>
         public string KavitaVersion { get; set; }
+        /// <summary>
+        /// Number of Cores on the Kavita Install
+        /// </summary>
+        public int NumOfCores { get; set; }
     }
 }

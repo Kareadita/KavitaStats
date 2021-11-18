@@ -35,13 +35,13 @@ namespace KavitaStats
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                    ForwardedHeaders.All;
             });
             services.AddCors();
             services.AddIdentityServices(_config);
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "KavitaStats", Version = "v1"});
+                c.SwaggerDoc("v2", new OpenApiInfo {Title = "KavitaStats", Version = "v2"});
                 c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -89,7 +89,7 @@ namespace KavitaStats
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "KavitaStats v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "KavitaStats v2"));
             }
             
             app.UseResponseCompression();

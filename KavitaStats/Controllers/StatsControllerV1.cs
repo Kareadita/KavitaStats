@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using KavitaStats.Attributes;
 using KavitaStats.Data;
-using KavitaStats.DTOs;
 using KavitaStats.DTOs.V1;
 using KavitaStats.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +39,7 @@ namespace KavitaStats.Controllers
                 existingRecord.DotnetVersion = dto.ServerInfo.DotNetVersion;
                 existingRecord.IsDocker = dto.ServerInfo.IsDocker;
                 existingRecord.KavitaVersion = dto.ServerInfo.KavitaVersion;
+                existingRecord.NumOfCores = dto.ServerInfo.NumOfCores;
                 existingRecord.LastUpdated = DateTime.Now;
             }
             else
@@ -50,6 +50,7 @@ namespace KavitaStats.Controllers
                     DotnetVersion = dto.ServerInfo.DotNetVersion,
                     IsDocker = dto.ServerInfo.IsDocker,
                     KavitaVersion = dto.ServerInfo.KavitaVersion,
+                    NumOfCores = dto.ServerInfo.NumOfCores,
                     LastUpdated = DateTime.Now
                 });
             }
