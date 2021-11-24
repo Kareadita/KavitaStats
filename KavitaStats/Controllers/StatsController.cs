@@ -26,6 +26,7 @@ namespace KavitaStats.Controllers
             _context = context;
         }
 
+        [HttpGet]
         [HttpPost]
         public async Task<ActionResult> AddOrUpdateInstance([FromBody] StatRecordDto dto)
         {
