@@ -26,6 +26,18 @@ namespace KavitaStats.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Validates an install ID as valid or not.
+        /// </summary>
+        /// <remarks>This is used by KavitaEmail service to validate valid installs are using it</remarks>
+        /// <param name="installId"></param>
+        /// <returns></returns>
+        [HttpGet("validate")]
+        public async Task<ActionResult<bool>> ValidateInstallId(string installId)
+        {
+            return Ok(await _context.StatRecord.AnyAsync(r => r.InstallId.Equals(installId)));
+        }
+
         [HttpGet]
         [HttpPost]
         public async Task<ActionResult> AddOrUpdateInstance([FromBody] StatRecordDto dto)
