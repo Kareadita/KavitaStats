@@ -25,5 +25,15 @@
         /// Number of Cores on the Kavita Install
         /// </summary>
         public int NumOfCores { get; set; }
+
+        /// <summary>
+        /// If the user has any bookmarks on their install
+        /// </summary>
+        public bool HasBookmarks { get; set; }
+
+        /// <summary>
+        /// The number of libraries
+        /// </summary>
+        public int NumberOfLibraries { get; set; }
     }
 }

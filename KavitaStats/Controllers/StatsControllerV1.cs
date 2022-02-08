@@ -30,6 +30,8 @@ namespace KavitaStats.Controllers
         [HttpPost]
         public async Task<ActionResult<V1Response>> AddOrUpdateInstance([FromBody] StatRecordV1Dto dto)
         {
+            _logger.LogInformation("[v1] {InstallId} is using v1 interface. Version: {Version}", dto.InstallId, dto.ServerInfo.KavitaVersion);
+            
             var existingRecord =
                 await _context.StatRecord.Where(r => r.InstallId == dto.InstallId).SingleOrDefaultAsync();
 
@@ -41,6 +43,8 @@ namespace KavitaStats.Controllers
                 existingRecord.KavitaVersion = dto.ServerInfo.KavitaVersion;
                 existingRecord.NumOfCores = dto.ServerInfo.NumOfCores;
                 existingRecord.LastUpdated = DateTime.Now;
+                existingRecord.HasBookmarks = false;
+                existingRecord.NumberOfLibraries = 0;
             }
             else
             {
@@ -51,7 +55,9 @@ namespace KavitaStats.Controllers
                     IsDocker = dto.ServerInfo.IsDocker,
                     KavitaVersion = dto.ServerInfo.KavitaVersion,
                     NumOfCores = dto.ServerInfo.NumOfCores,
-                    LastUpdated = DateTime.Now
+                    LastUpdated = DateTime.Now,
+                    HasBookmarks = false,
+                    NumberOfLibraries = 0
                 });
             }
 

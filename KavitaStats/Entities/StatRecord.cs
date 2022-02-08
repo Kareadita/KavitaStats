@@ -37,6 +37,14 @@ namespace KavitaStats.Entities
         /// </summary>
         /// <remarks>This is required because if nothing changes on the User instance, then Last Modified wont change.</remarks>
         public DateTime LastUpdated { get; set; }
+        /// <summary>
+        /// If the user has any bookmarks on their install
+        /// </summary>
+        public bool HasBookmarks { get; set; }
+        /// <summary>
+        /// The number of libraries
+        /// </summary>
+        public int NumberOfLibraries { get; set; }
 
         public DateTime Created { get; set; }
         public DateTime LastModified { get; set; }

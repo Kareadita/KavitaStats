@@ -53,6 +53,8 @@ namespace KavitaStats.Controllers
                 existingRecord.KavitaVersion = dto.KavitaVersion;
                 existingRecord.NumOfCores = dto.NumOfCores;
                 existingRecord.LastUpdated = DateTime.Now;
+                existingRecord.HasBookmarks = dto.HasBookmarks;
+                existingRecord.NumberOfLibraries = dto.NumberOfLibraries;
             }
             else
             {
@@ -63,7 +65,9 @@ namespace KavitaStats.Controllers
                     IsDocker = dto.IsDocker,
                     KavitaVersion = dto.KavitaVersion,
                     NumOfCores = dto.NumOfCores,
-                    LastUpdated = DateTime.Now
+                    LastUpdated = DateTime.Now,
+                    HasBookmarks = dto.HasBookmarks,
+                    NumberOfLibraries = dto.NumberOfLibraries
                 });
             }
 
