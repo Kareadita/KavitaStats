@@ -15,7 +15,7 @@ COPY --from=copytask /KavitaStats /app
 COPY entrypoint.sh /entrypoint.sh
 
 #Creates a temporary save of the config file
-RUN mkdir /tmp && cp /app/config/appsettings.json /tmp/appsettings.json
+RUN cp /app/config/appsettings.json /tmp/appsettings.json
 
 RUN apt-get update && \
     apt-get install -y curl nano rsync && \
