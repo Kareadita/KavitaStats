@@ -1,24 +1,13 @@
 #!/bin/bash
 
-# Sets environment variables
-if grep -q 'mongodb://root:rootpassword@localhost:27017' /KavitaStats/appsettings.json
+#Checks if the appsettings.json already exists in bind mount
+if test -f "/app/config/appsettings.json"
 then
-    sed -i "s,mongodb://root:rootpassword@localhost:27017,mongodb://${DB_USER}:${DB_PASS}@mongo:27017,g" /KavitaStats/appsettings.json
+	echo "appsettings.json exists, skipping..."
+else
+	cp /tmp/appsettings.json /app/config/appsettings.json
 fi
 
-if grep -q 'db_name_here' /KavitaStats/appsettings.json
-then
-    sed -i "s/db_name_here/${DB_NAME}/g" /KavitaStats/appsettings.json
-fi
+chmod +x /app/KavitaStats
 
-if grep -q 'api_key_here' /KavitaStats/appsettings.json
-then
-    sed -i "s/api_key_here/${API_KEY}/g" /KavitaStats/appsettings.json
-fi
-
-if grep -q 'allowed_hosts' /KavitaStats/appsettings.json
-then
-    sed -i "s/allowed_hosts/${ALLOWED_HOSTS}/g" /KavitaStats/appsettings.json
-fi
-
-dotnet Application.dll
+./KavitaStats

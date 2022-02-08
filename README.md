@@ -1,5 +1,8 @@
 # KavitaStats
 Stats API server for Kavita (not for public use)
 
-If you are developing and testing, a docker-compose is provided. If you want to use a docker based mongo, 
-then use mongodb://root:rootpassword@localhost:27017 in appSettings.Development.json. 
+If you are developing and testing, you can run the image with
+
+`docker run -p 5001:5001 -v ${PWD}/config:/app/config -d kizaing/kavitastats:latest`
+
+In order to use this you will have to compile your own modified Kavita instance, since the Stats server host is hard coded in public releases.
