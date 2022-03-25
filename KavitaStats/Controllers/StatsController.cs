@@ -55,6 +55,13 @@ namespace KavitaStats.Controllers
                 existingRecord.LastUpdated = DateTime.Now;
                 existingRecord.HasBookmarks = dto.HasBookmarks;
                 existingRecord.NumberOfLibraries = dto.NumberOfLibraries;
+                existingRecord.ActiveSiteTheme = dto.ActiveSiteTheme;
+                existingRecord.MangaReaderMode = dto.MangaReaderMode;
+                existingRecord.NumberOfCollections = dto.NumberOfCollections;
+                existingRecord.NumberOfUsers = dto.NumberOfUsers;
+                existingRecord.NumberOfReadingLists = dto.NumberOfReadingLists;
+                existingRecord.MaxFilesInLibrary = dto.MaxFilesInLibrary;
+                existingRecord.OPDSEnabled = dto.OPDSEnabled;
             }
             else
             {
@@ -67,7 +74,14 @@ namespace KavitaStats.Controllers
                     NumOfCores = dto.NumOfCores,
                     LastUpdated = DateTime.Now,
                     HasBookmarks = dto.HasBookmarks,
-                    NumberOfLibraries = dto.NumberOfLibraries
+                    NumberOfLibraries = dto.NumberOfLibraries,
+                    ActiveSiteTheme = dto.ActiveSiteTheme,
+                    MangaReaderMode = dto.MangaReaderMode,
+                    NumberOfCollections = dto.NumberOfCollections,
+                    NumberOfUsers = dto.NumberOfUsers,
+                    NumberOfReadingLists = dto.NumberOfReadingLists,
+                    MaxFilesInLibrary = dto.MaxFilesInLibrary,
+                    OPDSEnabled = dto.OPDSEnabled,
                 });
             }
 

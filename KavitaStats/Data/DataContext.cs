@@ -47,6 +47,10 @@ namespace KavitaStats.Data
                 entity.Created = DateTime.Now;
                 entity.LastModified = DateTime.Now;
             }
+            if (!e.FromQuery && e.Entry.State == EntityState.Added && e.Entry.Entity is IHasUpdateCounter entity2)
+            {
+                entity2.UpdateCount = 1;
+            }
 
         }
 
@@ -54,6 +58,9 @@ namespace KavitaStats.Data
         {
             if (e.NewState == EntityState.Modified && e.Entry.Entity is IHasDate entity)
                 entity.LastModified = DateTime.Now;
+            
+            if (e.NewState == EntityState.Modified && e.Entry.Entity is IHasUpdateCounter entity2)
+                entity2.UpdateCount += 1;
         }
         
     }

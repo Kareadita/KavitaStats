@@ -59,6 +59,7 @@ namespace KavitaStats.Controllers
                     HasBookmarks = false,
                     NumberOfLibraries = 0
                 });
+                _logger.LogInformation("New install on v1 api");
             }
 
             if (!_unitOfWork.HasChanges()) return Ok(new V1Response
