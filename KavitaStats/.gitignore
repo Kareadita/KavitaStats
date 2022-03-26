@@ -492,3 +492,11 @@ appsettings.json
 _temp/
 _output/
 wwwroot/
+
+# compiled output
+/UI/Web/dist
+/tmp
+/out-tsc
+UI/Web/dist/
+UI/Web/.angular/
+UI/Web/.vscode/settings.json
