@@ -11,13 +11,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KavitaStats.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220325231633_MoreFeatureStats")]
+    [Migration("20220326200828_MoreFeatureStats")]
     partial class MoreFeatureStats
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
 
             modelBuilder.Entity("KavitaStats.Entities.AppRole", b =>
                 {
@@ -168,9 +168,6 @@ namespace KavitaStats.Data.Migrations
                     b.Property<int>("MangaReaderMode")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MaxFilesInLibrary")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("NumOfCores")
                         .HasColumnType("INTEGER");
 
@@ -187,6 +184,9 @@ namespace KavitaStats.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("OPDSEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TotalFiles")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("UpdateCount")

@@ -69,9 +69,9 @@ namespace KavitaStats.DTOs
         public bool OPDSEnabled { get; set; }
         
         /// <summary>
-        /// The number of files representing a library. This will be max from all libraries.
+        /// Total number of files in the instance
         /// </summary>
-        public int MaxFilesInLibrary { get; set; }
+        public int TotalFiles { get; set; }
 
         /// <summary>
         /// How many updates this row has had

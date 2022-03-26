@@ -60,7 +60,7 @@ namespace KavitaStats.Controllers
                 existingRecord.NumberOfCollections = dto.NumberOfCollections;
                 existingRecord.NumberOfUsers = dto.NumberOfUsers;
                 existingRecord.NumberOfReadingLists = dto.NumberOfReadingLists;
-                existingRecord.MaxFilesInLibrary = dto.MaxFilesInLibrary;
+                existingRecord.TotalFiles = dto.TotalFiles;
                 existingRecord.OPDSEnabled = dto.OPDSEnabled;
             }
             else
@@ -80,7 +80,7 @@ namespace KavitaStats.Controllers
                     NumberOfCollections = dto.NumberOfCollections,
                     NumberOfUsers = dto.NumberOfUsers,
                     NumberOfReadingLists = dto.NumberOfReadingLists,
-                    MaxFilesInLibrary = dto.MaxFilesInLibrary,
+                    TotalFiles = dto.TotalFiles,
                     OPDSEnabled = dto.OPDSEnabled,
                 });
             }

@@ -22,13 +22,6 @@ namespace KavitaStats.Data.Migrations
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
-                name: "MaxFilesInLibrary",
-                table: "StatRecord",
-                type: "INTEGER",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
                 name: "NumberOfCollections",
                 table: "StatRecord",
                 type: "INTEGER",
@@ -56,6 +49,13 @@ namespace KavitaStats.Data.Migrations
                 nullable: false,
                 defaultValue: false);
 
+            migrationBuilder.AddColumn<int>(
+                name: "TotalFiles",
+                table: "StatRecord",
+                type: "INTEGER",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.AddColumn<long>(
                 name: "UpdateCount",
                 table: "StatRecord",
@@ -75,10 +75,6 @@ namespace KavitaStats.Data.Migrations
                 table: "StatRecord");
 
             migrationBuilder.DropColumn(
-                name: "MaxFilesInLibrary",
-                table: "StatRecord");
-
-            migrationBuilder.DropColumn(
                 name: "NumberOfCollections",
                 table: "StatRecord");
 
@@ -92,6 +88,10 @@ namespace KavitaStats.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "OPDSEnabled",
+                table: "StatRecord");
+
+            migrationBuilder.DropColumn(
+                name: "TotalFiles",
                 table: "StatRecord");
 
             migrationBuilder.DropColumn(
