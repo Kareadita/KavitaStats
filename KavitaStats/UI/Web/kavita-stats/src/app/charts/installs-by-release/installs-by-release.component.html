@@ -1,0 +1,32 @@
+<div class="card" *ngIf="installsByRelease !== undefined">
+    <div class="card-body">
+      <h5 class="card-title">Installs by Release</h5>
+      <h6 class="card-subtitle" *ngIf="totalInstalls > 0">Total Installs: {{totalInstalls}}</h6>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <label for="cutoff-days" class="form-label">How many days from today should we consider</label>
+            <br>
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="btnradio1">1 Month</label>
+              
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio2">6 Months</label>
+              
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio3">1 Year</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnradio4">All Time</label>
+            </div>
+        </li>
+      </ul>
+      <div class="card-text">
+        <canvas baseChart width="400" height="400"
+            [data]="installsByRelease"
+            [options]="barChartOptions"
+            (chartClick)="chartClicked($event)"
+            [type]="'bar'"></canvas>
+      </div>
+    </div>
+  </div>
