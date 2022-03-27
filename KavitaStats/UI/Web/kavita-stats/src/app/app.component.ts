@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ChartConfiguration, ChartData } from 'chart.js';
+import { ChartConfiguration, ChartData, ChartEvent } from 'chart.js';
 import { StatsService } from './stats.service';
 
 @Component({
@@ -9,20 +9,10 @@ import { StatsService } from './stats.service';
 })
 export class AppComponent {
 
-  totalUsers: number = 0;
-  installsByRelease!: ChartData<'bar'>;
+  totalInstalls: number = 0;
   
-  constructor(public statService: StatsService) {
-    this.statService.getTotalUsers().subscribe(users => this.totalUsers = users);
-    this.statService.getInstallsByRelease().subscribe(versionCounts => {
-      console.log(versionCounts);
-      this.installsByRelease.labels = versionCounts.map(r => r.releaseVersion);
-      this.installsByRelease.datasets.push({data: []});
-
-      versionCounts.forEach(releaseInstallCount => {
-        this.installsByRelease.labels?.push(releaseInstallCount.releaseVersion);
-        this.installsByRelease.datasets[0].data[0] = releaseInstallCount.installCount;
-      });
-    });
+  constructor(private statService: StatsService) {
+    this.statService.getTotalUsers().subscribe(users => this.totalInstalls = users);
+    
   }
 }

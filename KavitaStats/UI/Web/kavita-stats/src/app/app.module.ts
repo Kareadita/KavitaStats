@@ -5,10 +5,12 @@ import { NgChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { InstallsByReleaseComponent } from './charts/installs-by-release/installs-by-release.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    InstallsByReleaseComponent
   ],
   imports: [
     BrowserModule,

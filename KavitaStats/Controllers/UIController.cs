@@ -24,26 +24,43 @@ public class UiController : BaseApiController
     [HttpGet("total-users")]
     public async Task<ActionResult<int>> GetTotalUserCount()
     {
-        return await _dataContext.StatRecord.CountAsync();
+        return await _dataContext.StatRecord
+            .Select(s => s.InstallId)
+            .Distinct()
+            .AsNoTracking()
+            .CountAsync();
     }
     
     [HttpGet("installs-by-release")]
-    public async Task<ActionResult<IEnumerable<ReleaseInstallCountDto>>> GetUsersByRelease()
+    public async Task<ActionResult<IEnumerable<ReleaseInstallCountDto>>> GetUsersByRelease(int cutoffDays = 0)
     {
         var distinctInstalls =  await _dataContext.StatRecord
             .Select(s => s.KavitaVersion)
             .Distinct()
+            .OrderByDescending(r => r)
             .AsNoTracking()
             .ToListAsync();
 
         var releaseInstalls = new List<ReleaseInstallCountDto>();
         foreach (var install in distinctInstalls)
         {
-            var installCount = await _dataContext.StatRecord.CountAsync(s => s.KavitaVersion == install);
+
+            // var t = await _dataContext.StatRecord.Select(sr => new
+            // {
+            //     InstallCount = _dataContext.StatRecord.CountAsync(s => s.KavitaVersion == install),
+            //     DockerCount = _dataContext.StatRecord.Where(s => s.IsDocker).CountAsync(s => s.KavitaVersion == install),
+            // })
+
+            var cuttoffDate = DateTime.Now - TimeSpan.FromDays(cutoffDays);
+            
+
+            var count = await _dataContext.StatRecord.CountAsync(s =>
+                s.KavitaVersion == install || (cutoffDays > 0 && s.LastUpdated >= cuttoffDate));
+            if (count == 0) continue;
             
             releaseInstalls.Add(new ReleaseInstallCountDto()
             {
-                InstallCount = await _dataContext.StatRecord.CountAsync(s => s.KavitaVersion == install),
+                InstallCount = count,
                 ReleaseVersion = install
             });
         }

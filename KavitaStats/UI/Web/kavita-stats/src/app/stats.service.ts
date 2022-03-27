@@ -16,7 +16,7 @@ export class StatsService {
     return this.httpClient.get<number>(this.baseUrl + 'ui/total-users', { responseType: 'text' as 'json' });
   }
 
-  getInstallsByRelease() {
-    return this.httpClient.get<Array<ReleaseInstallCount>>(this.baseUrl + 'ui/installs-by-release');
+  getInstallsByRelease(cutoffDays: number = 0) {
+    return this.httpClient.get<Array<ReleaseInstallCount>>(this.baseUrl + 'ui/installs-by-release?cutoffDays=' + cutoffDays);
   }
 }
