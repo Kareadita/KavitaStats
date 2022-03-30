@@ -5,6 +5,7 @@ using KavitaStats.Attributes;
 using KavitaStats.Data;
 using KavitaStats.DTOs.V1;
 using KavitaStats.Entities;
+using KavitaStats.Entities.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -45,6 +46,13 @@ namespace KavitaStats.Controllers
                 existingRecord.LastUpdated = DateTime.Now;
                 existingRecord.HasBookmarks = false;
                 existingRecord.NumberOfLibraries = 0;
+                existingRecord.ActiveSiteTheme = null;
+                existingRecord.MangaReaderMode = ReaderMode.LeftRight;
+                existingRecord.NumberOfCollections = 0;
+                existingRecord.NumberOfUsers = 0;
+                existingRecord.NumberOfReadingLists = 0;
+                existingRecord.TotalFiles = 0;
+                existingRecord.OPDSEnabled = false;
             }
             else
             {
@@ -57,7 +65,14 @@ namespace KavitaStats.Controllers
                     NumOfCores = dto.ServerInfo.NumOfCores,
                     LastUpdated = DateTime.Now,
                     HasBookmarks = false,
-                    NumberOfLibraries = 0
+                    NumberOfLibraries = 0,
+                    ActiveSiteTheme = null,
+                    MangaReaderMode = ReaderMode.LeftRight,
+                    NumberOfCollections = 0,
+                    NumberOfUsers = 0,
+                    NumberOfReadingLists = 0,
+                    TotalFiles = 0,
+                    OPDSEnabled = false,
                 });
                 _logger.LogInformation("New install on v1 api");
             }
