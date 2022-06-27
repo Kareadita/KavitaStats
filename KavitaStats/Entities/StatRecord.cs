@@ -81,6 +81,51 @@ namespace KavitaStats.Entities
         /// Total number of files in the instance
         /// </summary>
         public int TotalFiles { get; set; }
+        /// <summary>
+        /// Total number of Genres in the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.5.4</remarks>
+        public int TotalGenres { get; set; }
+        /// <summary>
+        /// Total number of People in the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.5.4</remarks>
+        public int TotalPeople { get; set; }
+        /// <summary>
+        /// Is this instance storing bookmarks as WebP
+        /// </summary>
+        /// <remarks>Introduced in v0.5.4</remarks>
+        public bool StoreBookmarksAsWebP { get; set; }
+        /// <summary>
+        /// Number of users on this instance using Card Layout
+        /// </summary>
+        /// <remarks>Introduced in v0.5.4</remarks>
+        public int UsersOnCardLayout { get; set; }
+        /// <summary>
+        /// Number of users on this instance using List Layout
+        /// </summary>
+        /// <remarks>Introduced in v0.5.4</remarks>
+        public int UsersOnListLayout { get; set; }
+        /// <summary>
+        /// Max number of Series for any library on the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.5.4</remarks>
+        public int MaxSeriesInALibrary { get; set; }
+        /// <summary>
+        /// Max number of Volumes for any library on the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.5.4</remarks>
+        public int MaxVolumesInASeries { get; set; }
+        /// <summary>
+        /// Max number of Chapters for any library on the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.5.4</remarks>
+        public int MaxChaptersInASeries { get; set; }
+        /// <summary>
+        /// Does this instance have relationships setup between series
+        /// </summary>
+        /// <remarks>Introduced in v0.5.4</remarks>
+        public bool UsingSeriesRelationships { get; set; }
 
         /// <summary>
         /// How many updates this row has had

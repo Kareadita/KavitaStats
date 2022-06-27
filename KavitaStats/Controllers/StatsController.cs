@@ -62,6 +62,16 @@ namespace KavitaStats.Controllers
                 existingRecord.NumberOfReadingLists = dto.NumberOfReadingLists;
                 existingRecord.TotalFiles = dto.TotalFiles;
                 existingRecord.OPDSEnabled = dto.OPDSEnabled;
+                existingRecord.TotalGenres = dto.TotalGenres;
+                existingRecord.TotalPeople = dto.TotalPeople;
+                existingRecord.StoreBookmarksAsWebP = dto.StoreBookmarksAsWebP;
+                existingRecord.UsersOnCardLayout = dto.UsersOnCardLayout;
+                existingRecord.UsersOnListLayout = dto.UsersOnListLayout;
+                existingRecord.MaxSeriesInALibrary = dto.MaxSeriesInALibrary;
+                existingRecord.MaxVolumesInASeries = dto.MaxVolumesInASeries;
+                existingRecord.MaxChaptersInASeries = dto.MaxChaptersInASeries;
+                existingRecord.UsingSeriesRelationships = dto.UsingSeriesRelationships;
+                
             }
             else
             {
@@ -82,6 +92,15 @@ namespace KavitaStats.Controllers
                     NumberOfReadingLists = dto.NumberOfReadingLists,
                     TotalFiles = dto.TotalFiles,
                     OPDSEnabled = dto.OPDSEnabled,
+                    TotalGenres = dto.TotalGenres,
+                    TotalPeople = dto.TotalPeople,
+                    StoreBookmarksAsWebP = dto.StoreBookmarksAsWebP,
+                    UsersOnCardLayout = dto.UsersOnCardLayout,
+                    UsersOnListLayout = dto.UsersOnListLayout,
+                    MaxSeriesInALibrary = dto.MaxSeriesInALibrary,
+                    MaxVolumesInASeries = dto.MaxVolumesInASeries,
+                    MaxChaptersInASeries = dto.MaxChaptersInASeries,
+                    UsingSeriesRelationships = dto.UsingSeriesRelationships,
                 });
             }
 
