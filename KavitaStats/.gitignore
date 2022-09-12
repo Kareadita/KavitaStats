@@ -500,3 +500,9 @@ wwwroot/
 UI/Web/dist/
 UI/Web/.angular/
 UI/Web/.vscode/settings.json
+
+Application/obj/**/*
+obj/**/*
+Tests.Integration/bin/
+obj/*
+
