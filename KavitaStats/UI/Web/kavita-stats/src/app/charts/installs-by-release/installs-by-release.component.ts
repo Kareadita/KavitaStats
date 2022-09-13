@@ -49,6 +49,8 @@ export class InstallsByReleaseComponent implements OnInit {
         this.totalInstalls += releaseInstallCount.installCount;
       });
     });
+
+    this.statService.getVolumesInASeries().subscribe(data => console.log(data));
   }
 
   chartClicked({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
