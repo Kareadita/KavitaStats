@@ -8,7 +8,8 @@ COPY _output/*.tar.gz /files/
 COPY copy_runtime.sh /copy_runtime.sh
 RUN /copy_runtime.sh
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+#FROM mcr.microsoft.com/dotnet/aspnet:6.0 (Joe: I removed this as it was failing the build, using what we have for Kavita)
+FROM ubuntu:focal
 
 COPY --from=copytask /KavitaStats /app
 
