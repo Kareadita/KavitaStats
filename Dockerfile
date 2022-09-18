@@ -20,7 +20,7 @@ COPY entrypoint.sh /entrypoint.sh
 RUN cp /app/config/appsettings.json /tmp/appsettings.json
 
 RUN apt-get update && \
-    apt-get install -y curl nano rsync libicu63 && \
+    apt-get install -y curl nano rsync && \
     rm -rf /var/lib/apt/lists/*
 
 EXPOSE 5001
