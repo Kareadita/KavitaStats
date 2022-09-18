@@ -9,8 +9,8 @@
         <Authors>KavitaStats</Authors>
         <Company>kavitareader.com</Company>
         <Product>KavitaStats</Product>
-        <AssemblyVersion>0.1.5</AssemblyVersion>
         <InvariantGlobalization>true</InvariantGlobalization>
+        <AssemblyVersion>0.1.6</AssemblyVersion>
     </PropertyGroup>
     
     <ItemGroup>
