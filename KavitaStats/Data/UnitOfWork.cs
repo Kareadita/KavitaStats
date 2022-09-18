@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
+using KavitaStats.Data.Repository;
 using KavitaStats.Entities;
 using Microsoft.AspNetCore.Identity;
 
@@ -7,6 +8,10 @@ namespace KavitaStats.Data
 {
     public interface IUnitOfWork
     {
+        IColorRepository ColorRepository { get; }
+        IPageSplitRepository PageSplitRepository { get; }
+        IMangaReaderLayoutModeRepository MangaReaderLayoutModeRepository { get; }
+        IFileFormatRepository FileFormatRepository { get; }
         bool Commit();
         Task<bool> CommitAsync();
         bool HasChanges();
@@ -16,6 +21,7 @@ namespace KavitaStats.Data
     }
     public class UnitOfWork : IUnitOfWork
     {
+        
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
@@ -26,7 +32,12 @@ namespace KavitaStats.Data
             _mapper = mapper;
             _userManager = userManager;
         }
-        
+
+
+        public IColorRepository ColorRepository => new ColorRepository(_context, _mapper);
+        public IPageSplitRepository PageSplitRepository => new PageSplitRepository(_context, _mapper);
+        public IMangaReaderLayoutModeRepository MangaReaderLayoutModeRepository => new MangaReaderLayoutModeRepository(_context, _mapper);
+        public IFileFormatRepository FileFormatRepository => new FileFormatRepository(_context, _mapper);
 
         /// <summary>
         /// Commits changes to the DB. Completes the open transaction.
