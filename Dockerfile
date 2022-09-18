@@ -10,7 +10,6 @@ RUN /copy_runtime.sh
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 
-
 COPY --from=copytask /KavitaStats /app
 
 COPY entrypoint.sh /entrypoint.sh
@@ -19,7 +18,7 @@ COPY entrypoint.sh /entrypoint.sh
 RUN cp /app/config/appsettings.json /tmp/appsettings.json
 
 RUN apt-get update && \
-    apt-get install -y curl nano rsync && \
+    apt-get install -y curl nano rsync libicu-dev && \
     rm -rf /var/lib/apt/lists/*
 
 EXPOSE 5001
