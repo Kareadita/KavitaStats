@@ -29,8 +29,25 @@ public class UiController : BaseApiController
             .Distinct()
             .AsNoTracking()
             .CountAsync();
+        
+        // select count((select distinct installId from StatRecord)) from StatRecord;
     }
-    
+
+    [HttpGet("volumes-in-a-series")]
+    public async Task<ActionResult<VolumesInASeriesDto>> GetVolumesInASeries()
+    {
+        // select min(MaxVolumesInASeries), max(MaxVolumesInASeries), avg(MaxVolumesInASeries) from StatRecord;
+        var ret = new VolumesInASeriesDto()
+        {
+            Maximum = await _dataContext.StatRecord.Select(s => s.MaxVolumesInASeries).MaxAsync(),
+            Minimum = await _dataContext.StatRecord.Select(s => s.MaxVolumesInASeries).MinAsync(),
+            Average = await _dataContext.StatRecord.Select(s => s.MaxVolumesInASeries).AverageAsync(),
+        };
+
+        return ret;
+
+    }
+
     [HttpGet("installs-by-release")]
     public async Task<ActionResult<IEnumerable<ReleaseInstallCountDto>>> GetUsersByRelease(int cutoffDays = 0)
     {

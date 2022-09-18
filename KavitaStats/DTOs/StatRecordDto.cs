@@ -1,4 +1,7 @@
-﻿using KavitaStats.Entities.Enum;
+﻿using System;
+using System.Collections.Generic;
+using KavitaStats.Entities;
+using KavitaStats.Entities.Enum;
 
 namespace KavitaStats.DTOs
 {
@@ -116,5 +119,26 @@ namespace KavitaStats.DTOs
         /// </summary>
         /// <remarks>Introduced in v0.5.4</remarks>
         public bool UsingSeriesRelationships { get; set; }
+
+        /// <summary>
+        /// A list of background colors set on the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.6.0</remarks>
+        public ICollection<string> MangaReaderBackgroundColors { get; set; } = Array.Empty<string>();
+        /// <summary>
+        /// A comma separated list of Page Split defaults being used on the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.6.0</remarks>
+        public ICollection<PageSplitOption> MangaReaderPageSplittingModes { get; set; } = Array.Empty<PageSplitOption>();
+        /// <summary>
+        /// A comma separated list of Layout Mode defaults being used on the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.6.0</remarks>
+        public ICollection<ReaderMode> MangaReaderLayoutModes { get; set; } = Array.Empty<ReaderMode>();
+        /// <summary>
+        /// A list of file formats existing in the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.6.0</remarks>
+        public ICollection<FileFormatDto> FileFormats { get; set; } = Array.Empty<FileFormatDto>();
     }
 }

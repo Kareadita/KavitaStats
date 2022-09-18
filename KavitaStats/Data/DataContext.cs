@@ -1,5 +1,6 @@
 ﻿using System;
 using KavitaStats.Entities;
+using KavitaStats.Entities.Enum;
 using KavitaStats.Entities.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -15,6 +16,10 @@ namespace KavitaStats.Data
         
         public DbSet<AppUser> AppUser { get; set; }
         public DbSet<StatRecord> StatRecord { get; set; }
+        public DbSet<Color> Color { get; set; }
+        public DbSet<MangaReaderLayoutMode> MangaReaderLayoutMode { get; set; }
+        public DbSet<PageSplit> PageSplit { get; set; }
+        public DbSet<FileFormat> FileFormat { get; set; }
         
         public DataContext(DbContextOptions options) : base(options)
         {

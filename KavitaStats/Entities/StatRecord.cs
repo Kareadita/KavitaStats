@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using KavitaStats.Entities.Enum;
 using KavitaStats.Entities.Interfaces;
 
@@ -126,6 +127,33 @@ namespace KavitaStats.Entities
         /// </summary>
         /// <remarks>Introduced in v0.5.4</remarks>
         public bool UsingSeriesRelationships { get; set; }
+        /// <summary>
+        /// If the Instance has opted out of Reporting stats
+        /// </summary>
+        /// <remarks>Introduced in v0.6.0</remarks>
+        public bool OptedOut { get; set; }
+        /// <summary>
+        /// A list of background colors set on the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.6.0</remarks>
+        public ICollection<Color> MangaReaderBackgroundColors { get; set; }
+        /// <summary>
+        /// A list of Page Split defaults being used on the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.6.0</remarks>
+        public ICollection<PageSplit> MangaReaderPageSplittingModes { get; set; }
+        /// <summary>
+        /// A list of Layout Mode defaults being used on the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.6.0</remarks>
+        public ICollection<MangaReaderLayoutMode> MangaReaderLayoutModes { get; set; }
+        /// <summary>
+        /// A list of file formats existing in the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.6.0</remarks>
+        public ICollection<FileFormat> FileFormats { get; set; }
+        
+        
 
         /// <summary>
         /// How many updates this row has had
