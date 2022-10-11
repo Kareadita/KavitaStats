@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using KavitaStats.Entities;
 using KavitaStats.Entities.Enum;
 
 namespace KavitaStats.DTOs
@@ -126,12 +125,12 @@ namespace KavitaStats.DTOs
         /// <remarks>Introduced in v0.6.0</remarks>
         public ICollection<string> MangaReaderBackgroundColors { get; set; } = Array.Empty<string>();
         /// <summary>
-        /// A comma separated list of Page Split defaults being used on the instance
+        /// A list of Page Split defaults being used on the instance
         /// </summary>
         /// <remarks>Introduced in v0.6.0</remarks>
         public ICollection<PageSplitOption> MangaReaderPageSplittingModes { get; set; } = Array.Empty<PageSplitOption>();
         /// <summary>
-        /// A comma separated list of Layout Mode defaults being used on the instance
+        /// A list of Layout Mode defaults being used on the instance
         /// </summary>
         /// <remarks>Introduced in v0.6.0</remarks>
         public ICollection<ReaderMode> MangaReaderLayoutModes { get; set; } = Array.Empty<ReaderMode>();
@@ -140,5 +139,10 @@ namespace KavitaStats.DTOs
         /// </summary>
         /// <remarks>Introduced in v0.6.0</remarks>
         public ICollection<FileFormatDto> FileFormats { get; set; } = Array.Empty<FileFormatDto>();
+        /// <summary>
+        /// If there is at least one user that is using an age restricted profile on the instance
+        /// </summary>
+        /// <remarks>Introduced in v0.6.0</remarks>
+        public bool UsingRestrictedProfiles { get; set; }
     }
 }

@@ -28,6 +28,7 @@ namespace KavitaStats.Controllers
             _context = context;
         }
 
+        [HttpGet]
         [HttpPost]
         public async Task<ActionResult<V1Response>> AddOrUpdateInstance([FromBody] StatRecordV1Dto dto)
         {
@@ -73,6 +74,8 @@ namespace KavitaStats.Controllers
                     NumberOfReadingLists = 0,
                     TotalFiles = 0,
                     OPDSEnabled = false,
+                    UsingRestrictedProfiles = false,
+                    OptedOut = false
                 });
                 _logger.LogInformation("New install on v1 api");
             }
