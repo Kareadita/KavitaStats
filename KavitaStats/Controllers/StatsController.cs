@@ -52,11 +52,11 @@ namespace KavitaStats.Controllers
 
             return Ok();
         }
-
-        [HttpGet]
+        
         [HttpPost]
         public async Task<ActionResult> AddOrUpdateInstance([FromBody] StatRecordDto dto)
         {
+            _logger.LogInformation("Handling Update for InstallId: {InstallId}", dto.InstallId);
             var existingRecord =
                 await _context.StatRecord.Where(r => r.InstallId == dto.InstallId).SingleOrDefaultAsync();
 
@@ -93,6 +93,7 @@ namespace KavitaStats.Controllers
                 existingRecord.MaxChaptersInASeries = dto.MaxChaptersInASeries;
                 existingRecord.UsingSeriesRelationships = dto.UsingSeriesRelationships;
                 existingRecord.OptedOut = false;
+                existingRecord.UsingRestrictedProfiles = dto.UsingRestrictedProfiles;
                 
                 existingRecord.MangaReaderBackgroundColors = colors;
                 _unitOfWork.ColorRepository.Delete(existingRecord.MangaReaderBackgroundColors.Where(c => !colors.Select(c2 => c2.Value).Contains(c.Value)));
@@ -138,7 +139,8 @@ namespace KavitaStats.Controllers
                     MangaReaderBackgroundColors = colors,
                     MangaReaderPageSplittingModes = pageSplittingModes,
                     MangaReaderLayoutModes = mangaReaderLayoutModes,
-                    FileFormats = fileFormats
+                    FileFormats = fileFormats,
+                    UsingRestrictedProfiles = dto.UsingRestrictedProfiles
                 });
             }
 
@@ -245,5 +247,30 @@ namespace KavitaStats.Controllers
 
             return formats;
         }
+        
+        // private async Task<List<AgeRating>> ProcessAgeRestrictionRatings(StatRecordDto dto)
+        // {
+        //     var ratings = new List<AgeRating>();
+        //     if (dto.AgeRestrictedRatings == null || dto.AgeRestrictedRatings.Count == 0) return ratings;
+        //     
+        //     var existingRatings = (await _unitOfWork.FileFormatRepository.FindAll()).ToList();
+        //     foreach (var fileFormat in dto.FileFormats)
+        //     {
+        //         var existingFormat = existingRatings.SingleOrDefault(c => c.Extension.Equals(fileFormat.Extension));
+        //         if (existingFormat == null)
+        //         {
+        //             existingFormat = new FileFormat()
+        //             {
+        //                 Format = fileFormat.Format,
+        //                 Extension = fileFormat.Extension
+        //             };
+        //             _unitOfWork.FileFormatRepository.Attach(existingFormat);
+        //         }
+        //
+        //         ratings.Add(existingFormat);
+        //     }
+        //
+        //     return ratings;
+        // }
     }
 }

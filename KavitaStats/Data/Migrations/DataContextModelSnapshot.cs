@@ -296,6 +296,9 @@ namespace KavitaStats.Data.Migrations
                     b.Property<int>("UsersOnListLayout")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("UsingRestrictedProfiles")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("UsingSeriesRelationships")
                         .HasColumnType("INTEGER");
 

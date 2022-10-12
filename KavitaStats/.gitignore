@@ -505,4 +505,6 @@ Application/obj/**/*
 obj/**/*
 Tests.Integration/bin/
 obj/*
+/_output/
+KavitaStats/_output/
 

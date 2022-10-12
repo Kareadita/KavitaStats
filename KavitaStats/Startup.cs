@@ -1,6 +1,7 @@
 using System;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using KavitaStats.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace KavitaStats
@@ -83,7 +85,8 @@ namespace KavitaStats
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
+            IHostApplicationLifetime applicationLifetime, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -145,7 +148,7 @@ namespace KavitaStats
             applicationLifetime.ApplicationStopping.Register(OnShutdown);
             applicationLifetime.ApplicationStarted.Register(() =>
             {
-                Console.WriteLine($"Server has started up");
+                Console.WriteLine($"KavitaStats - v{Assembly.GetExecutingAssembly().GetName().Version}");
             });
         }
         
