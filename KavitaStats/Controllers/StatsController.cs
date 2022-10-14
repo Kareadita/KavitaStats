@@ -57,97 +57,105 @@ namespace KavitaStats.Controllers
         public async Task<ActionResult> AddOrUpdateInstance([FromBody] StatRecordDto dto)
         {
             _logger.LogInformation("Handling Update for InstallId: {InstallId}", dto.InstallId);
-            var existingRecord =
+            try
+            {
+                var existingRecord =
                 await _context.StatRecord.Where(r => r.InstallId == dto.InstallId).SingleOrDefaultAsync();
 
-            var colors = await ProcessMangaReaderBackgroundColors(dto);
-            var pageSplittingModes = await ProcessMangaReaderPageSplittingModes(dto);
-            var mangaReaderLayoutModes = await ProcessMangaReaderLayoutModes(dto);
-            var fileFormats = await ProcessFileFormats(dto);
+                var colors = await ProcessMangaReaderBackgroundColors(dto);
+                var pageSplittingModes = await ProcessMangaReaderPageSplittingModes(dto);
+                var mangaReaderLayoutModes = await ProcessMangaReaderLayoutModes(dto);
+                var fileFormats = await ProcessFileFormats(dto);
 
 
-            if (existingRecord != null)
-            {
-                // perform update
-                existingRecord.DotnetVersion = dto.DotnetVersion;
-                existingRecord.IsDocker = dto.IsDocker;
-                existingRecord.KavitaVersion = dto.KavitaVersion;
-                existingRecord.NumOfCores = dto.NumOfCores;
-                existingRecord.LastUpdated = DateTime.Now;
-                existingRecord.HasBookmarks = dto.HasBookmarks;
-                existingRecord.NumberOfLibraries = dto.NumberOfLibraries;
-                existingRecord.ActiveSiteTheme = dto.ActiveSiteTheme;
-                existingRecord.MangaReaderMode = dto.MangaReaderMode;
-                existingRecord.NumberOfCollections = dto.NumberOfCollections;
-                existingRecord.NumberOfUsers = dto.NumberOfUsers;
-                existingRecord.NumberOfReadingLists = dto.NumberOfReadingLists;
-                existingRecord.TotalFiles = dto.TotalFiles;
-                existingRecord.OPDSEnabled = dto.OPDSEnabled;
-                existingRecord.TotalGenres = dto.TotalGenres;
-                existingRecord.TotalPeople = dto.TotalPeople;
-                existingRecord.StoreBookmarksAsWebP = dto.StoreBookmarksAsWebP;
-                existingRecord.UsersOnCardLayout = dto.UsersOnCardLayout;
-                existingRecord.UsersOnListLayout = dto.UsersOnListLayout;
-                existingRecord.MaxSeriesInALibrary = dto.MaxSeriesInALibrary;
-                existingRecord.MaxVolumesInASeries = dto.MaxVolumesInASeries;
-                existingRecord.MaxChaptersInASeries = dto.MaxChaptersInASeries;
-                existingRecord.UsingSeriesRelationships = dto.UsingSeriesRelationships;
-                existingRecord.OptedOut = false;
-                existingRecord.UsingRestrictedProfiles = dto.UsingRestrictedProfiles;
-                
-                existingRecord.MangaReaderBackgroundColors = colors;
-                _unitOfWork.ColorRepository.Delete(existingRecord.MangaReaderBackgroundColors.Where(c => !colors.Select(c2 => c2.Value).Contains(c.Value)));
-                
-                existingRecord.MangaReaderPageSplittingModes = pageSplittingModes;    
-                _unitOfWork.PageSplitRepository.Delete(existingRecord.MangaReaderPageSplittingModes.Where(c => !pageSplittingModes.Select(c2 => c2.PageSplitOption).Contains(c.PageSplitOption)));
-                
-                existingRecord.MangaReaderLayoutModes = mangaReaderLayoutModes;
-                _unitOfWork.MangaReaderLayoutModeRepository.Delete(existingRecord.MangaReaderLayoutModes.Where(c => !mangaReaderLayoutModes.Select(c2 => c2.ReaderMode).Contains(c.ReaderMode)));
-                
-                existingRecord.FileFormats = fileFormats;
-                _unitOfWork.FileFormatRepository.Delete(existingRecord.FileFormats.Where(c => !fileFormats.Select(c2 => c2.Extension).Contains(c.Extension)));
-            }
-            else
-            {
-                await _context.StatRecord.AddAsync(new StatRecord()
+                if (existingRecord != null)
                 {
-                    InstallId = dto.InstallId,
-                    DotnetVersion = dto.DotnetVersion,
-                    IsDocker = dto.IsDocker,
-                    KavitaVersion = dto.KavitaVersion,
-                    NumOfCores = dto.NumOfCores,
-                    LastUpdated = DateTime.Now,
-                    HasBookmarks = dto.HasBookmarks,
-                    NumberOfLibraries = dto.NumberOfLibraries,
-                    ActiveSiteTheme = dto.ActiveSiteTheme,
-                    MangaReaderMode = dto.MangaReaderMode,
-                    NumberOfCollections = dto.NumberOfCollections,
-                    NumberOfUsers = dto.NumberOfUsers,
-                    NumberOfReadingLists = dto.NumberOfReadingLists,
-                    TotalFiles = dto.TotalFiles,
-                    OPDSEnabled = dto.OPDSEnabled,
-                    TotalGenres = dto.TotalGenres,
-                    TotalPeople = dto.TotalPeople,
-                    StoreBookmarksAsWebP = dto.StoreBookmarksAsWebP,
-                    UsersOnCardLayout = dto.UsersOnCardLayout,
-                    UsersOnListLayout = dto.UsersOnListLayout,
-                    MaxSeriesInALibrary = dto.MaxSeriesInALibrary,
-                    MaxVolumesInASeries = dto.MaxVolumesInASeries,
-                    MaxChaptersInASeries = dto.MaxChaptersInASeries,
-                    UsingSeriesRelationships = dto.UsingSeriesRelationships,
-                    OptedOut = false,
-                    MangaReaderBackgroundColors = colors,
-                    MangaReaderPageSplittingModes = pageSplittingModes,
-                    MangaReaderLayoutModes = mangaReaderLayoutModes,
-                    FileFormats = fileFormats,
-                    UsingRestrictedProfiles = dto.UsingRestrictedProfiles
-                });
-            }
+                    // perform update
+                    existingRecord.DotnetVersion = dto.DotnetVersion;
+                    existingRecord.IsDocker = dto.IsDocker;
+                    existingRecord.KavitaVersion = dto.KavitaVersion;
+                    existingRecord.NumOfCores = dto.NumOfCores;
+                    existingRecord.LastUpdated = DateTime.Now;
+                    existingRecord.HasBookmarks = dto.HasBookmarks;
+                    existingRecord.NumberOfLibraries = dto.NumberOfLibraries;
+                    existingRecord.ActiveSiteTheme = dto.ActiveSiteTheme;
+                    existingRecord.MangaReaderMode = dto.MangaReaderMode;
+                    existingRecord.NumberOfCollections = dto.NumberOfCollections;
+                    existingRecord.NumberOfUsers = dto.NumberOfUsers;
+                    existingRecord.NumberOfReadingLists = dto.NumberOfReadingLists;
+                    existingRecord.TotalFiles = dto.TotalFiles;
+                    existingRecord.OPDSEnabled = dto.OPDSEnabled;
+                    existingRecord.TotalGenres = dto.TotalGenres;
+                    existingRecord.TotalPeople = dto.TotalPeople;
+                    existingRecord.StoreBookmarksAsWebP = dto.StoreBookmarksAsWebP;
+                    existingRecord.UsersOnCardLayout = dto.UsersOnCardLayout;
+                    existingRecord.UsersOnListLayout = dto.UsersOnListLayout;
+                    existingRecord.MaxSeriesInALibrary = dto.MaxSeriesInALibrary;
+                    existingRecord.MaxVolumesInASeries = dto.MaxVolumesInASeries;
+                    existingRecord.MaxChaptersInASeries = dto.MaxChaptersInASeries;
+                    existingRecord.UsingSeriesRelationships = dto.UsingSeriesRelationships;
+                    existingRecord.OptedOut = false;
+                    existingRecord.UsingRestrictedProfiles = dto.UsingRestrictedProfiles;
+                    
+                    existingRecord.MangaReaderBackgroundColors = colors;
+                    _unitOfWork.ColorRepository.Delete(existingRecord.MangaReaderBackgroundColors.Where(c => !colors.Select(c2 => c2.Value).Contains(c.Value)));
+                    
+                    existingRecord.MangaReaderPageSplittingModes = pageSplittingModes;    
+                    _unitOfWork.PageSplitRepository.Delete(existingRecord.MangaReaderPageSplittingModes.Where(c => !pageSplittingModes.Select(c2 => c2.PageSplitOption).Contains(c.PageSplitOption)));
+                    
+                    existingRecord.MangaReaderLayoutModes = mangaReaderLayoutModes;
+                    _unitOfWork.MangaReaderLayoutModeRepository.Delete(existingRecord.MangaReaderLayoutModes.Where(c => !mangaReaderLayoutModes.Select(c2 => c2.ReaderMode).Contains(c.ReaderMode)));
+                    
+                    existingRecord.FileFormats = fileFormats;
+                    _unitOfWork.FileFormatRepository.Delete(existingRecord.FileFormats.Where(c => !fileFormats.Select(c2 => c2.Extension).Contains(c.Extension)));
+                }
+                else
+                {
+                    await _context.StatRecord.AddAsync(new StatRecord()
+                    {
+                        InstallId = dto.InstallId,
+                        DotnetVersion = dto.DotnetVersion,
+                        IsDocker = dto.IsDocker,
+                        KavitaVersion = dto.KavitaVersion,
+                        NumOfCores = dto.NumOfCores,
+                        LastUpdated = DateTime.Now,
+                        HasBookmarks = dto.HasBookmarks,
+                        NumberOfLibraries = dto.NumberOfLibraries,
+                        ActiveSiteTheme = dto.ActiveSiteTheme,
+                        MangaReaderMode = dto.MangaReaderMode,
+                        NumberOfCollections = dto.NumberOfCollections,
+                        NumberOfUsers = dto.NumberOfUsers,
+                        NumberOfReadingLists = dto.NumberOfReadingLists,
+                        TotalFiles = dto.TotalFiles,
+                        OPDSEnabled = dto.OPDSEnabled,
+                        TotalGenres = dto.TotalGenres,
+                        TotalPeople = dto.TotalPeople,
+                        StoreBookmarksAsWebP = dto.StoreBookmarksAsWebP,
+                        UsersOnCardLayout = dto.UsersOnCardLayout,
+                        UsersOnListLayout = dto.UsersOnListLayout,
+                        MaxSeriesInALibrary = dto.MaxSeriesInALibrary,
+                        MaxVolumesInASeries = dto.MaxVolumesInASeries,
+                        MaxChaptersInASeries = dto.MaxChaptersInASeries,
+                        UsingSeriesRelationships = dto.UsingSeriesRelationships,
+                        OptedOut = false,
+                        MangaReaderBackgroundColors = colors,
+                        MangaReaderPageSplittingModes = pageSplittingModes,
+                        MangaReaderLayoutModes = mangaReaderLayoutModes,
+                        FileFormats = fileFormats,
+                        UsingRestrictedProfiles = dto.UsingRestrictedProfiles
+                    });
+                }
 
-            if (!_unitOfWork.HasChanges()) return Ok();
-            if (await _unitOfWork.CommitAsync())
+                if (!_unitOfWork.HasChanges()) return Ok();
+                if (await _unitOfWork.CommitAsync())
+                {
+                    _logger.LogDebug("{InstallId} updated completely", dto.InstallId);
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
             {
-                return Ok();
+                _logger.LogError(ex, "There was an exception when updating v1 install: {InstallId}", dto.InstallId);
             }
             
             return BadRequest("There was an issue updating KavitaStats");
