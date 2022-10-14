@@ -48,8 +48,8 @@ Package()
     echo "Show KavitaStats structure"
     find
 
-	  echo "Copying appsettings.json"
-    cp ./config/appsettings.Development.json $lOutputFolder/config/appsettings.json
+	  #echo "Copying appsettings.json"
+    #cp ./config/appsettings.json $lOutputFolder/config/appsettings.json
 
     echo "Creating tar"
     cd ../$outputFolder/"$runtime"/
