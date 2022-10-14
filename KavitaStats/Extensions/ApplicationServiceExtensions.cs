@@ -17,13 +17,13 @@ namespace KavitaStats.Extensions
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddSqLite(config, env);
             services.AddLogging(config);
+            services.AddSqLite(config, env);
             services.AddSignalR();
         }
 
         private static void AddSqLite(this IServiceCollection services, IConfiguration config,
-            IWebHostEnvironment env)
+            IHostEnvironment env)
         {
             services.AddDbContext<DataContext>(options =>
             {

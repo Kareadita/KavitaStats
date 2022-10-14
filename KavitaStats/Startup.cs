@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 namespace KavitaStats
 {
@@ -124,20 +125,8 @@ namespace KavitaStats
             {
                 ContentTypeProvider = new FileExtensionContentTypeProvider()
             });
-
-            app.Use(async (context, next) =>
-            {
-                context.Response.GetTypedHeaders().CacheControl =
-                    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-                    {
-                        Public = false,
-                        MaxAge = TimeSpan.FromSeconds(10),
-                    };
-                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
-                    new[] { "Accept-Encoding" };
-
-                await next();
-            });
+            
+            app.UseSerilogRequestLogging();
 
             app.UseEndpoints(endpoints =>
             {
