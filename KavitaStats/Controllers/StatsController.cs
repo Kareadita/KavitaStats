@@ -88,6 +88,7 @@ namespace KavitaStats.Controllers
                     existingRecord.TotalGenres = dto.TotalGenres;
                     existingRecord.TotalPeople = dto.TotalPeople;
                     existingRecord.StoreBookmarksAsWebP = dto.StoreBookmarksAsWebP;
+                    existingRecord.StoreCoversAsWebP = dto.StoreCoversAsWebP;
                     existingRecord.UsersOnCardLayout = dto.UsersOnCardLayout;
                     existingRecord.UsersOnListLayout = dto.UsersOnListLayout;
                     existingRecord.MaxSeriesInALibrary = dto.MaxSeriesInALibrary;
@@ -96,6 +97,14 @@ namespace KavitaStats.Controllers
                     existingRecord.UsingSeriesRelationships = dto.UsingSeriesRelationships;
                     existingRecord.OptedOut = false;
                     existingRecord.UsingRestrictedProfiles = dto.UsingRestrictedProfiles;
+                    existingRecord.TotalReadingHours = dto.TotalReadingHours;
+                    existingRecord.PercentOfLibrariesIncludedInDashboard = dto.PercentOfLibrariesIncludedInDashboard;
+                    existingRecord.PercentOfLibrariesIncludedInRecommended = dto.PercentOfLibrariesIncludedInRecommended;
+                    existingRecord.PercentOfLibrariesIncludedInSearch = dto.PercentOfLibrariesIncludedInSearch;
+                    existingRecord.PercentOfLibrariesWithFolderWatchingEnabled =
+                        dto.PercentOfLibrariesWithFolderWatchingEnabled;
+                    existingRecord.UsersWithEmulateComicBook = dto.UsersWithEmulateComicBook;
+                    
                     
                     existingRecord.MangaReaderBackgroundColors = colors;
                     _unitOfWork.ColorRepository.Delete(existingRecord.MangaReaderBackgroundColors.Where(c => !colors.Select(c2 => c2.Value).Contains(c.Value)));
@@ -108,6 +117,8 @@ namespace KavitaStats.Controllers
                     
                     existingRecord.FileFormats = fileFormats;
                     _unitOfWork.FileFormatRepository.Delete(existingRecord.FileFormats.Where(c => !fileFormats.Select(c2 => c2.Extension).Contains(c.Extension)));
+                    
+                    
                 }
                 else
                 {
@@ -142,7 +153,15 @@ namespace KavitaStats.Controllers
                         MangaReaderPageSplittingModes = pageSplittingModes,
                         MangaReaderLayoutModes = mangaReaderLayoutModes,
                         FileFormats = fileFormats,
-                        UsingRestrictedProfiles = dto.UsingRestrictedProfiles
+                        UsingRestrictedProfiles = dto.UsingRestrictedProfiles,
+                        TotalReadingHours = dto.TotalReadingHours,
+                        PercentOfLibrariesIncludedInDashboard = dto.PercentOfLibrariesIncludedInDashboard,
+                        PercentOfLibrariesIncludedInRecommended = dto.PercentOfLibrariesIncludedInRecommended,
+                        PercentOfLibrariesIncludedInSearch = dto.PercentOfLibrariesIncludedInSearch,
+                        PercentOfLibrariesWithFolderWatchingEnabled =
+                        dto.PercentOfLibrariesWithFolderWatchingEnabled,
+                        UsersWithEmulateComicBook = dto.UsersWithEmulateComicBook,
+                        StoreCoversAsWebP = dto.StoreCoversAsWebP
                     });
                 }
 
@@ -197,7 +216,7 @@ namespace KavitaStats.Controllers
                 {
                     existingMode = new PageSplit()
                     {
-                        PageSplitOption = (PageSplitOption) mode
+                        PageSplitOption = mode
                     };
                     _unitOfWork.PageSplitRepository.Attach(existingMode);
                 }
@@ -221,7 +240,7 @@ namespace KavitaStats.Controllers
                 {
                     existingMode = new MangaReaderLayoutMode()
                     {
-                        ReaderMode = (ReaderMode) mode
+                        ReaderMode = mode
                     };
                     _unitOfWork.MangaReaderLayoutModeRepository.Attach(existingMode);
                 }
@@ -255,30 +274,5 @@ namespace KavitaStats.Controllers
 
             return formats;
         }
-        
-        // private async Task<List<AgeRating>> ProcessAgeRestrictionRatings(StatRecordDto dto)
-        // {
-        //     var ratings = new List<AgeRating>();
-        //     if (dto.AgeRestrictedRatings == null || dto.AgeRestrictedRatings.Count == 0) return ratings;
-        //     
-        //     var existingRatings = (await _unitOfWork.FileFormatRepository.FindAll()).ToList();
-        //     foreach (var fileFormat in dto.FileFormats)
-        //     {
-        //         var existingFormat = existingRatings.SingleOrDefault(c => c.Extension.Equals(fileFormat.Extension));
-        //         if (existingFormat == null)
-        //         {
-        //             existingFormat = new FileFormat()
-        //             {
-        //                 Format = fileFormat.Format,
-        //                 Extension = fileFormat.Extension
-        //             };
-        //             _unitOfWork.FileFormatRepository.Attach(existingFormat);
-        //         }
-        //
-        //         ratings.Add(existingFormat);
-        //     }
-        //
-        //     return ratings;
-        // }
     }
 }

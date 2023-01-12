@@ -492,6 +492,7 @@ appsettings.Development.json
 _temp/
 _output/
 wwwroot/
+*.pb
 
 # compiled output
 /UI/Web/dist
