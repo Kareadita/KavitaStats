@@ -78,7 +78,14 @@ namespace KavitaStats.Controllers
                         TotalFiles = 0,
                         OPDSEnabled = false,
                         UsingRestrictedProfiles = false,
-                        OptedOut = false
+                        OptedOut = false,
+                        TotalReadingHours = 0,
+                        PercentOfLibrariesIncludedInDashboard = 0,
+                        PercentOfLibrariesIncludedInRecommended = 0,
+                        PercentOfLibrariesIncludedInSearch = 0,
+                        PercentOfLibrariesWithFolderWatchingEnabled = 0,
+                        UsersWithEmulateComicBook = 0,
+                        StoreCoversAsWebP = false
                     });
                     _logger.LogInformation("New install on v1 api");
                 }
