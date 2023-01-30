@@ -12,7 +12,7 @@ using Serilog.Events;
 
 namespace KavitaStats
 {
-    public class Program
+    public static class Program
     {
         private const int HttpPort = 5001;
 
