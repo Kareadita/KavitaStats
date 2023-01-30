@@ -508,4 +508,5 @@ Tests.Integration/bin/
 obj/*
 /_output/
 KavitaStats/_output/
+/.idea/.idea.KavitaStats/.idea/sonarlint/
 
