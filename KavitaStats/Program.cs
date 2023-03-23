@@ -10,70 +10,69 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 
-namespace KavitaStats
+namespace KavitaStats;
+
+public static class Program
 {
-    public static class Program
+    private const int HttpPort = 5001;
+
+    public static async Task Main(string[] args)
     {
-        private const int HttpPort = 5001;
-
-        public static async Task Main(string[] args)
-        {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
             
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .WriteTo.File("config/logs/kavitastats.log")
-                .CreateBootstrapLogger();
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.File("config/logs/kavitastats.log")
+            .CreateBootstrapLogger();
 
-            try
-            {
-                var host = CreateHostBuilder(args).Build();
+        try
+        {
+            var host = CreateHostBuilder(args).Build();
 
-                using var scope = host.Services.CreateScope();
-                var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<DataContext>();
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<DataContext>();
 
-                // Apply all migrations on startup
-                await context.Database.MigrateAsync();
+            // Apply all migrations on startup
+            await context.Database.MigrateAsync();
 
-                await host.RunAsync();
-            }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "Host terminated unexpectedly");
-            }
-            finally
-            {
-                await Log.CloseAndFlushAsync();
-            }
+            await host.RunAsync();
         }
-
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSerilog((context, services, configuration) => configuration
-                    .ReadFrom.Configuration(context.Configuration)
-                    .ReadFrom.Services(services)
-                    .Enrich.FromLogContext()
-                )
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    config.Sources.Clear();
-
-                    var env = hostingContext.HostingEnvironment;
-
-                    config.AddJsonFile("config/appsettings.json", optional: false, reloadOnChange: false)
-                        .AddJsonFile($"config/appsettings.{env.EnvironmentName}.json",
-                            optional: true, reloadOnChange: false);
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseKestrel((opts) =>
-                    {
-                        opts.ListenAnyIP(HttpPort, options => { options.Protocols = HttpProtocols.Http1AndHttp2; });
-                    });
-                    webBuilder.UseStartup<Startup>();
-                });
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Host terminated unexpectedly");
+        }
+        finally
+        {
+            await Log.CloseAndFlushAsync();
+        }
     }
+
+    private static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .UseSerilog((context, services, configuration) => configuration
+                .ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext()
+            )
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.Sources.Clear();
+
+                var env = hostingContext.HostingEnvironment;
+
+                config.AddJsonFile("config/appsettings.json", optional: false, reloadOnChange: false)
+                    .AddJsonFile($"config/appsettings.{env.EnvironmentName}.json",
+                        optional: true, reloadOnChange: false);
+            })
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseKestrel((opts) =>
+                {
+                    opts.ListenAnyIP(HttpPort, options => { options.Protocols = HttpProtocols.Http1AndHttp2; });
+                });
+                webBuilder.UseStartup<Startup>();
+            });
 }

@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
-namespace KavitaStats.Entities
+namespace KavitaStats.Entities;
+
+public class AppRole : IdentityRole<int>
 {
-    public class AppRole : IdentityRole<int>
-    {
-        public ICollection<AppUserRole> UserRoles { get; set; }
-    }
+    public ICollection<AppUserRole> UserRoles { get; set; }
 }

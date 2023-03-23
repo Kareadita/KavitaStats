@@ -7,38 +7,37 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace KavitaStats.Extensions
+namespace KavitaStats.Extensions;
+
+public static class ApplicationServiceExtensions
 {
-    public static class ApplicationServiceExtensions
+    public static void AddApplicationServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
     {
-        public static void AddApplicationServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
-        {
-            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+        services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddLogging(config);
-            services.AddSqLite(config, env);
-            services.AddSignalR();
-        }
+        services.AddLogging(config);
+        services.AddSqLite(config, env);
+        services.AddSignalR();
+    }
 
-        private static void AddSqLite(this IServiceCollection services, IConfiguration config,
-            IHostEnvironment env)
+    private static void AddSqLite(this IServiceCollection services, IConfiguration config,
+        IHostEnvironment env)
+    {
+        services.AddDbContext<DataContext>(options =>
         {
-            services.AddDbContext<DataContext>(options =>
-            {
-                options.UseSqlite(config.GetConnectionString("DefaultConnection"));
-                options.EnableSensitiveDataLogging(env.IsDevelopment());
-            });
-        }
+            options.UseSqlite(config.GetConnectionString("DefaultConnection"));
+            options.EnableSensitiveDataLogging(env.IsDevelopment());
+        });
+    }
 
-        private static void AddLogging(this IServiceCollection services, IConfiguration config)
+    private static void AddLogging(this IServiceCollection services, IConfiguration config)
+    {
+        services.AddLogging(loggingBuilder =>
         {
-          services.AddLogging(loggingBuilder =>
-          {
-              var loggingSection = config.GetSection("Logging");
-              loggingBuilder.AddFile(loggingSection);
-          });
-        }
+            var loggingSection = config.GetSection("Logging");
+            loggingBuilder.AddFile(loggingSection);
+        });
     }
 }
