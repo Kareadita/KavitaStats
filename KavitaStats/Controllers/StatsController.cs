@@ -56,6 +56,7 @@ public class StatsController : BaseApiController
     public async Task<ActionResult> AddOrUpdateInstance([FromBody] StatRecordDto dto)
     {
         _logger.LogInformation("Handling Update for InstallId: {InstallId}", dto.InstallId);
+        _logger.LogDebug("Payload: {@Dto}", dto);
         try
         {
             var existingRecord =
