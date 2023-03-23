@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace KavitaStats.Entities.Interfaces
+namespace KavitaStats.Entities.Interfaces;
+
+public interface IHasDate
 {
-    public interface IHasDate
-    {
-        DateTime Created { get; set; }
-        DateTime LastModified { get; set; }
-    }
+    DateTime Created { get; set; }
+    DateTime LastModified { get; set; }
 }

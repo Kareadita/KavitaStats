@@ -1,15 +1,14 @@
 ﻿using System.Security.Authentication;
 using System.Security.Claims;
 
-namespace KavitaStats.Extensions
+namespace KavitaStats.Extensions;
+
+public static class ClaimsPrincipalExtensions
 {
-    public static class ClaimsPrincipalExtensions
+    public static string GetUsername(this ClaimsPrincipal user)
     {
-        public static string GetUsername(this ClaimsPrincipal user)
-        {
-            var userClaim = user.FindFirst(ClaimTypes.NameIdentifier);
-            if (userClaim == null) throw new AuthenticationException("User is not authenticated");
-            return userClaim.Value;
-        }
+        var userClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+        if (userClaim == null) throw new AuthenticationException("User is not authenticated");
+        return userClaim.Value;
     }
 }
