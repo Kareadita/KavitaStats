@@ -9,6 +9,7 @@ using KavitaStats.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using static Serilog.Context.LogContext;
 
 namespace KavitaStats.Controllers;
 
@@ -65,7 +66,9 @@ public class StatsController : BaseApiController
             var colors = await ProcessMangaReaderBackgroundColors(dto);
             var pageSplittingModes = await ProcessMangaReaderPageSplittingModes(dto);
             var mangaReaderLayoutModes = await ProcessMangaReaderLayoutModes(dto);
-            var fileFormats = await ProcessFileFormats(dto);
+            
+            // This is not architected correctly and has issues
+            //var fileFormats = await ProcessFileFormats(dto);
 
 
             if (existingRecord != null)
@@ -115,10 +118,9 @@ public class StatsController : BaseApiController
                 existingRecord.MangaReaderLayoutModes = mangaReaderLayoutModes;
                 _unitOfWork.MangaReaderLayoutModeRepository.Delete(existingRecord.MangaReaderLayoutModes.Where(c => !mangaReaderLayoutModes.Select(c2 => c2.ReaderMode).Contains(c.ReaderMode)));
                     
-                existingRecord.FileFormats = fileFormats;
-                _unitOfWork.FileFormatRepository.Delete(existingRecord.FileFormats.Where(c => !fileFormats.Select(c2 => c2.Extension).Contains(c.Extension)));
-                    
-                    
+                existingRecord.FileFormats = new List<FileFormat>();
+                // _unitOfWork.FileFormatRepository.Delete(existingRecord.FileFormats
+                //     .Where(c => !fileFormats.Select(c2 => c2.Extension).Contains(c.Extension)));
             }
             else
             {
@@ -152,7 +154,7 @@ public class StatsController : BaseApiController
                     MangaReaderBackgroundColors = colors,
                     MangaReaderPageSplittingModes = pageSplittingModes,
                     MangaReaderLayoutModes = mangaReaderLayoutModes,
-                    FileFormats = fileFormats,
+                    FileFormats = new List<FileFormat>(),
                     UsingRestrictedProfiles = dto.UsingRestrictedProfiles,
                     TotalReadingHours = dto.TotalReadingHours,
                     PercentOfLibrariesIncludedInDashboard = dto.PercentOfLibrariesIncludedInDashboard,
@@ -169,6 +171,7 @@ public class StatsController : BaseApiController
             if (await _unitOfWork.CommitAsync())
             {
                 _logger.LogDebug("{InstallId} updated completely", dto.InstallId);
+                 
                 return Ok();
             }
         }
@@ -256,9 +259,10 @@ public class StatsController : BaseApiController
         if (dto.FileFormats == null || dto.FileFormats.Count == 0) return formats;
             
         var existingFormats = (await _unitOfWork.FileFormatRepository.FindAll()).ToList();
-        foreach (var fileFormat in dto.FileFormats.Where(f => !string.IsNullOrEmpty(f.Extension)))
+        foreach (var fileFormat in dto.FileFormats)
         {
-            var existingFormat = existingFormats.SingleOrDefault(c => c.Extension.Equals(fileFormat.Extension));
+            var existingFormat = existingFormats.SingleOrDefault(c => 
+                c.Extension.Equals(fileFormat.Extension) && c.Format == fileFormat.Format);
             if (existingFormat == null)
             {
                 existingFormat = new FileFormat()
