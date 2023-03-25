@@ -63,11 +63,13 @@ public class StatsController : BaseApiController
             var existingRecord =
                 await _context.StatRecord.Where(r => r.InstallId == dto.InstallId).SingleOrDefaultAsync();
 
-            var colors = await ProcessMangaReaderBackgroundColors(dto);
-            var pageSplittingModes = await ProcessMangaReaderPageSplittingModes(dto);
-            var mangaReaderLayoutModes = await ProcessMangaReaderLayoutModes(dto);
-            
-            // This is not architected correctly and has issues
+            // This is not architected correctly and has issues. This needs junction table instead
+            // var colors = await ProcessMangaReaderBackgroundColors(dto);
+            // var pageSplittingModes = await ProcessMangaReaderPageSplittingModes(dto);
+            // var mangaReaderLayoutModes = await ProcessMangaReaderLayoutModes(dto);            
+            var colors = new List<Color>();
+            var pageSplittingModes = new List<PageSplit>();
+            var mangaReaderLayoutModes = new List<MangaReaderLayoutMode>();
             //var fileFormats = await ProcessFileFormats(dto);
 
 
@@ -110,13 +112,13 @@ public class StatsController : BaseApiController
                     
                     
                 existingRecord.MangaReaderBackgroundColors = colors;
-                _unitOfWork.ColorRepository.Delete(existingRecord.MangaReaderBackgroundColors.Where(c => !colors.Select(c2 => c2.Value).Contains(c.Value)));
+                //_unitOfWork.ColorRepository.Delete(existingRecord.MangaReaderBackgroundColors.Where(c => !colors.Select(c2 => c2.Value).Contains(c.Value)));
                     
-                existingRecord.MangaReaderPageSplittingModes = pageSplittingModes;    
-                _unitOfWork.PageSplitRepository.Delete(existingRecord.MangaReaderPageSplittingModes.Where(c => !pageSplittingModes.Select(c2 => c2.PageSplitOption).Contains(c.PageSplitOption)));
+                existingRecord.MangaReaderPageSplittingModes = pageSplittingModes;   
+                //_unitOfWork.PageSplitRepository.Delete(existingRecord.MangaReaderPageSplittingModes.Where(c => !pageSplittingModes.Select(c2 => c2.PageSplitOption).Contains(c.PageSplitOption)));
                     
                 existingRecord.MangaReaderLayoutModes = mangaReaderLayoutModes;
-                _unitOfWork.MangaReaderLayoutModeRepository.Delete(existingRecord.MangaReaderLayoutModes.Where(c => !mangaReaderLayoutModes.Select(c2 => c2.ReaderMode).Contains(c.ReaderMode)));
+                //_unitOfWork.MangaReaderLayoutModeRepository.Delete(existingRecord.MangaReaderLayoutModes.Where(c => !mangaReaderLayoutModes.Select(c2 => c2.ReaderMode).Contains(c.ReaderMode)));
                     
                 existingRecord.FileFormats = new List<FileFormat>();
                 // _unitOfWork.FileFormatRepository.Delete(existingRecord.FileFormats
@@ -177,7 +179,7 @@ public class StatsController : BaseApiController
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "There was an exception when updating v2 install: {InstallId}", dto.InstallId);
+            _logger.LogError(ex, "There was an exception when updating v2 install: {InstallId} with {@Dto}", dto.InstallId, dto);
         }
             
         return BadRequest("There was an issue updating KavitaStats");
