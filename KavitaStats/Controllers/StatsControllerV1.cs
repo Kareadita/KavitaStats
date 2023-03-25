@@ -107,7 +107,7 @@ public class StatsControllerV1 : BaseApiController
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "There was an exception when updating v1 install: {InstallId}", dto.InstallId);
+            _logger.LogError(ex, "There was an exception when updating v1 install: {InstallId} with {@Dto}", dto.InstallId, dto);
         }
             
         return BadRequest(new V1Response

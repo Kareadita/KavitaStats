@@ -177,7 +177,7 @@ public class StatsController : BaseApiController
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "There was an exception when updating v2 install: {InstallId}", dto.InstallId);
+            _logger.LogError(ex, "There was an exception when updating v2 install: {InstallId} with {@Dto}", dto.InstallId, dto);
         }
             
         return BadRequest("There was an issue updating KavitaStats");
