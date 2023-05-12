@@ -95,7 +95,8 @@ public class StatRecord : IHasDate, IHasUpdateCounter
     /// <summary>
     /// Is this instance storing bookmarks as WebP
     /// </summary>
-    /// <remarks>Introduced in v0.5.4</remarks>
+    /// <remarks>Introduced in v0.5.4 and removed in v0.7.2.5/v0.7.3</remarks>
+    [Obsolete("Use EncodeMediaAs")]
     public bool StoreBookmarksAsWebP { get; set; }
     /// <summary>
     /// Number of users on this instance using Card Layout
@@ -190,8 +191,14 @@ public class StatRecord : IHasDate, IHasUpdateCounter
     /// <summary>
     /// Is the Server saving covers as WebP
     /// </summary>
-    /// <remarks>Added in v0.7.0</remarks>
+    /// <remarks>Added in v0.7.0 and removed in v0.7.2.5/v0.7.3</remarks>
+    [Obsolete("Use EncodeMediaAs")]
     public bool StoreCoversAsWebP { get; set; }
+    /// <summary>
+    /// The encoding the server is using to save media
+    /// </summary>
+    /// <remarks>Added in v0.7.3</remarks>
+    public EncodeFormat EncodeMediaAs { get; set; }
 
         
     /// <summary>
