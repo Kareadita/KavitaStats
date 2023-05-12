@@ -92,8 +92,6 @@ public class StatsController : BaseApiController
                 existingRecord.OPDSEnabled = dto.OPDSEnabled;
                 existingRecord.TotalGenres = dto.TotalGenres;
                 existingRecord.TotalPeople = dto.TotalPeople;
-                existingRecord.StoreBookmarksAsWebP = dto.StoreBookmarksAsWebP;
-                existingRecord.StoreCoversAsWebP = dto.StoreCoversAsWebP;
                 existingRecord.UsersOnCardLayout = dto.UsersOnCardLayout;
                 existingRecord.UsersOnListLayout = dto.UsersOnListLayout;
                 existingRecord.MaxSeriesInALibrary = dto.MaxSeriesInALibrary;
@@ -109,6 +107,7 @@ public class StatsController : BaseApiController
                 existingRecord.PercentOfLibrariesWithFolderWatchingEnabled =
                     dto.PercentOfLibrariesWithFolderWatchingEnabled;
                 existingRecord.UsersWithEmulateComicBook = dto.UsersWithEmulateComicBook;
+                existingRecord.EncodeMediaAs = dto.EncodeMediaAs;
                     
                     
                 existingRecord.MangaReaderBackgroundColors = colors;
@@ -145,7 +144,6 @@ public class StatsController : BaseApiController
                     OPDSEnabled = dto.OPDSEnabled,
                     TotalGenres = dto.TotalGenres,
                     TotalPeople = dto.TotalPeople,
-                    StoreBookmarksAsWebP = dto.StoreBookmarksAsWebP,
                     UsersOnCardLayout = dto.UsersOnCardLayout,
                     UsersOnListLayout = dto.UsersOnListLayout,
                     MaxSeriesInALibrary = dto.MaxSeriesInALibrary,
@@ -165,7 +163,7 @@ public class StatsController : BaseApiController
                     PercentOfLibrariesWithFolderWatchingEnabled =
                         dto.PercentOfLibrariesWithFolderWatchingEnabled,
                     UsersWithEmulateComicBook = dto.UsersWithEmulateComicBook,
-                    StoreCoversAsWebP = dto.StoreCoversAsWebP
+                    EncodeMediaAs = dto.EncodeMediaAs
                 });
             }
 

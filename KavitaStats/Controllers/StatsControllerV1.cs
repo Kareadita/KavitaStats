@@ -85,7 +85,7 @@ public class StatsControllerV1 : BaseApiController
                     PercentOfLibrariesIncludedInSearch = 0,
                     PercentOfLibrariesWithFolderWatchingEnabled = 0,
                     UsersWithEmulateComicBook = 0,
-                    StoreCoversAsWebP = false
+                    EncodeMediaAs = EncodeFormat.PNG
                 });
                 _logger.LogInformation("New install on v1 api");
             }
