@@ -45,7 +45,7 @@ public class StatsController : BaseApiController
     {
         _logger.LogInformation("Stat collection has been requested to be stopped on {InstallId}", installId);
         var existingRecord =
-            await _context.StatRecord.Where(r => r.InstallId == installId).SingleOrDefaultAsync();
+            await _context.StatRecord.Where(r => r.InstallId == installId).FirstOrDefaultAsync();
         if (existingRecord == null) return Ok();
 
         existingRecord.OptedOut = true;
@@ -61,7 +61,7 @@ public class StatsController : BaseApiController
         try
         {
             var existingRecord =
-                await _context.StatRecord.Where(r => r.InstallId == dto.InstallId).SingleOrDefaultAsync();
+                await _context.StatRecord.Where(r => r.InstallId == dto.InstallId).FirstOrDefaultAsync();
 
             // This is not architected correctly and has issues. This needs junction table instead
             // var colors = await ProcessMangaReaderBackgroundColors(dto);
@@ -191,7 +191,7 @@ public class StatsController : BaseApiController
         var existingColors = (await _unitOfWork.ColorRepository.FindAll()).ToList();
         foreach (var color in dto.MangaReaderBackgroundColors)
         {
-            var existingColor = existingColors.SingleOrDefault(c => c.Value.Equals(color));
+            var existingColor = existingColors.FirstOrDefault(c => c.Value.Equals(color));
             if (existingColor == null)
             {
                 existingColor = new Color()
@@ -214,7 +214,7 @@ public class StatsController : BaseApiController
         var existingModes = (await _unitOfWork.PageSplitRepository.FindAll()).ToList();
         foreach (var mode in dto.MangaReaderPageSplittingModes)
         {
-            var existingMode = existingModes.SingleOrDefault(c => c.PageSplitOption.Equals(mode));
+            var existingMode = existingModes.FirstOrDefault(c => c.PageSplitOption.Equals(mode));
             if (existingMode == null)
             {
                 existingMode = new PageSplit()
@@ -238,7 +238,7 @@ public class StatsController : BaseApiController
         var existingModes = (await _unitOfWork.MangaReaderLayoutModeRepository.FindAll()).ToList();
         foreach (var mode in dto.MangaReaderLayoutModes)
         {
-            var existingMode = existingModes.SingleOrDefault(c => c.ReaderMode.Equals(mode));
+            var existingMode = existingModes.FirstOrDefault(c => c.ReaderMode.Equals(mode));
             if (existingMode == null)
             {
                 existingMode = new MangaReaderLayoutMode()
@@ -261,7 +261,7 @@ public class StatsController : BaseApiController
         var existingFormats = (await _unitOfWork.FileFormatRepository.FindAll()).ToList();
         foreach (var fileFormat in dto.FileFormats)
         {
-            var existingFormat = existingFormats.SingleOrDefault(c => 
+            var existingFormat = existingFormats.FirstOrDefault(c => 
                 c.Extension.Equals(fileFormat.Extension) && c.Format == fileFormat.Format);
             if (existingFormat == null)
             {
