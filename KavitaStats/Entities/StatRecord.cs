@@ -199,6 +199,11 @@ public class StatRecord : IHasDate, IHasUpdateCounter
     /// </summary>
     /// <remarks>Added in v0.7.3</remarks>
     public EncodeFormat EncodeMediaAs { get; set; }
+    /// <summary>
+    /// The last user reading progress on the server (in UTC)
+    /// </summary>
+    /// <remarks>Added in v0.7.4</remarks>
+    public DateTime LastReadTime { get; set; }
 
         
     /// <summary>

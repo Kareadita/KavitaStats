@@ -108,6 +108,7 @@ public class StatsController : BaseApiController
                     dto.PercentOfLibrariesWithFolderWatchingEnabled;
                 existingRecord.UsersWithEmulateComicBook = dto.UsersWithEmulateComicBook;
                 existingRecord.EncodeMediaAs = dto.EncodeMediaAs;
+                existingRecord.LastReadTime = dto.LastReadTime;
                     
                     
                 existingRecord.MangaReaderBackgroundColors = colors;
@@ -163,7 +164,8 @@ public class StatsController : BaseApiController
                     PercentOfLibrariesWithFolderWatchingEnabled =
                         dto.PercentOfLibrariesWithFolderWatchingEnabled,
                     UsersWithEmulateComicBook = dto.UsersWithEmulateComicBook,
-                    EncodeMediaAs = dto.EncodeMediaAs
+                    EncodeMediaAs = dto.EncodeMediaAs,
+                    LastReadTime = dto.LastReadTime
                 });
             }
 
