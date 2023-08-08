@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KavitaStats.Data;
+using KavitaStats.DTOs;
 using KavitaStats.DTOs.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -84,6 +85,15 @@ public class UiController : BaseApiController
 
         // TODO: Need to order by Version number .OrderBy(r => new Version(r.ReleaseVersion))
         return releaseInstalls;
+    }
+    
+    [HttpGet("install-count")]
+    public async Task<ActionResult<InstallCountDto>> GetActiveInstalls()
+    {
+        return Ok(new InstallCountDto()
+        {
+            InstallCount = await _dataContext.StatRecord.CountAsync()
+        });
     }
     
     // I need install growth over time (this is by created date vs install version)
