@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KavitaStats.Data;
+using KavitaStats.DTOs;
 using KavitaStats.DTOs.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -84,6 +85,27 @@ public class UiController : BaseApiController
 
         // TODO: Need to order by Version number .OrderBy(r => new Version(r.ReleaseVersion))
         return releaseInstalls;
+    }
+    
+    [HttpGet("shield-badge")]
+    public async Task<ActionResult<ShieldBadgeDto>> GetActiveInstalls()
+    {
+        return Ok(new ShieldBadgeDto()
+        {
+            Message = "Active Installs: " + FormatNumberCompact(await _dataContext.StatRecord.CountAsync())
+        });
+    }
+    
+    private static string FormatNumberCompact(long number)
+    {
+        return number switch
+        {
+            // If greater than or equal to a million
+            >= 1000000 => (number / 1000000.0).ToString("0.#") + "M",
+            // If greater than or equal to a thousand
+            >= 1000 => (number / 1000.0).ToString("0.#") + "K",
+            _ => number.ToString()
+        };
     }
     
     // I need install growth over time (this is by created date vs install version)
