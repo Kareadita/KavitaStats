@@ -87,13 +87,25 @@ public class UiController : BaseApiController
         return releaseInstalls;
     }
     
-    [HttpGet("install-count")]
-    public async Task<ActionResult<InstallCountDto>> GetActiveInstalls()
+    [HttpGet("shield-badge")]
+    public async Task<ActionResult<ShieldBadgeDto>> GetActiveInstalls()
     {
-        return Ok(new InstallCountDto()
+        return Ok(new ShieldBadgeDto()
         {
-            InstallCount = await _dataContext.StatRecord.CountAsync()
+            Message = "Active Installs: " + FormatNumberCompact(await _dataContext.StatRecord.CountAsync())
         });
+    }
+    
+    private static string FormatNumberCompact(long number)
+    {
+        return number switch
+        {
+            // If greater than or equal to a million
+            >= 1000000 => (number / 1000000.0).ToString("0.#") + "M",
+            // If greater than or equal to a thousand
+            >= 1000 => (number / 1000.0).ToString("0.#") + "K",
+            _ => number.ToString()
+        };
     }
     
     // I need install growth over time (this is by created date vs install version)

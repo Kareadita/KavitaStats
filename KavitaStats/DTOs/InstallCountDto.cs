@@ -1,6 +1,9 @@
 ﻿namespace KavitaStats.DTOs;
 
-public class InstallCountDto
+public class ShieldBadgeDto
 {
-    public int InstallCount { get; set; }
+    public int SchemaVersion => 1;
+    public string Label => "Active Installs";
+    public string Message { get; set; }
+    public string Color => "green";
 }
