@@ -87,12 +87,16 @@ public class UiController : BaseApiController
         return releaseInstalls;
     }
     
+    /// <summary>
+    /// Generates the shield.io status badge for Kavita's readme
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("shield-badge")]
     public async Task<ActionResult<ShieldBadgeDto>> GetActiveInstalls()
     {
         return Ok(new ShieldBadgeDto()
         {
-            Message = "Active Installs: " + FormatNumberCompact(await _dataContext.StatRecord.CountAsync())
+            Message = FormatNumberCompact(await _dataContext.StatRecord.CountAsync())
         });
     }
     
