@@ -117,7 +117,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           push: true
-          tags: kizaing/kavitastats:latest, kizaing/kavitastats:${{ steps.parse-version.outputs.VERSION }}
+          tags: jvmilazz0/kavitastats:latest, jvmilazz0/kavitastats:${{ steps.parse-version.outputs.VERSION }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
