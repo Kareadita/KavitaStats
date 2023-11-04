@@ -40,7 +40,7 @@ public class StatsController : BaseApiController
         return Ok(await _context.StatRecord.AnyAsync(r => r.InstallId.Equals(installId)));
     }
 
-    [HttpPost("out-out")]
+    [HttpPost("opt-out")]
     public async Task<ActionResult> UpdateAsCancelled([FromQuery] string installId)
     {
         _logger.LogInformation("Stat collection has been requested to be stopped on {InstallId}", installId);
