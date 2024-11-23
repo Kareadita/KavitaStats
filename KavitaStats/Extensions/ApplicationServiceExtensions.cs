@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NReco.Logging.File;
 
 namespace KavitaStats.Extensions;
 
@@ -25,7 +26,7 @@ public static class ApplicationServiceExtensions
     private static void AddSqLite(this IServiceCollection services, IConfiguration config,
         IHostEnvironment env)
     {
-        services.AddDbContext<DataContext>(options =>
+        services.AddDbContextPool<DataContext>(options =>
         {
             options.UseSqlite(config.GetConnectionString("DefaultConnection"));
             options.EnableSensitiveDataLogging(env.IsDevelopment());
