@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <AssemblyName>KavitaStats</AssemblyName>
         <RootNamespace>KavitaStats</RootNamespace>
@@ -44,11 +44,4 @@
         <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore.HttpOverrides, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
-        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\5.0.9\Microsoft.AspNetCore.HttpOverrides.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>
