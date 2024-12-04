@@ -1,6 +1,6 @@
 ﻿using KavitaStats.Entities.Enum;
 
-namespace KavitaStats.DTOs;
+namespace KavitaStats.DTOs.V2;
 
 public class FileFormatDto
 {

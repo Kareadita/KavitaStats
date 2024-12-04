@@ -14,13 +14,13 @@ namespace KavitaStats.Controllers;
 
 [ApiKeyAuthentication]
 [Route("api/v2/[controller]")]
-public class StatsController : BaseApiController
+public class StatsV2Controller : BaseApiController
 {
-    private readonly ILogger<StatsController> _logger;
+    private readonly ILogger<StatsV2Controller> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly DataContext _context;
 
-    public StatsController(ILogger<StatsController> logger, IUnitOfWork unitOfWork, DataContext context)
+    public StatsV2Controller(ILogger<StatsV2Controller> logger, IUnitOfWork unitOfWork, DataContext context)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;

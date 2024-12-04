@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using KavitaStats.DTOs.V2;
 using KavitaStats.Entities.Enum;
 
 namespace KavitaStats.DTOs;
