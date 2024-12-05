@@ -31,6 +31,12 @@ public static class ApplicationServiceExtensions
             options.UseSqlite(config.GetConnectionString("DefaultConnection"));
             options.EnableSensitiveDataLogging(env.IsDevelopment());
         });
+        
+        services.AddDbContextPool<DataContextV3>(options =>
+        {
+            options.UseSqlite(config.GetConnectionString("DefaultConnectionV3"));
+            options.EnableSensitiveDataLogging(env.IsDevelopment());
+        });
     }
 
     private static void AddLogging(this IServiceCollection services, IConfiguration config)
