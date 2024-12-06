@@ -3,6 +3,7 @@ using System;
 using KavitaStats.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KavitaStats.Data.Migrations.V3
 {
     [DbContext(typeof(DataContextV3))]
-    partial class DataContextV3ModelSnapshot : ModelSnapshot
+    [Migration("20241206135257_InitialV3")]
+    partial class InitialV3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");

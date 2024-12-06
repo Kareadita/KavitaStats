@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using KavitaStats.Entities.Enum;
+using KavitaStats.Entities.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace KavitaStats.Entities.V3;
 
-public class ServerInfoV3
+[Index("InstallId", IsUnique = true)]
+public class ServerStat : IHasDate
 {
-    public string InstallId { get; set; } // Primary key
+    public int Id { get; set; }
+    public string InstallId { get; set; }
+    /// <summary>
+    /// Has the server opted out of sending stats
+    /// </summary>
+    public bool OptedOut { get; set; }
     public string Os { get; set; }
     public bool IsDocker { get; set; }
     public string DotnetVersion { get; set; }
@@ -31,12 +39,16 @@ public class ServerInfoV3
     public int MaxChaptersInASeries { get; set; }
 
     public bool OpdsEnabled { get; set; }
-    public EncodeFormat EncodeMediaAs { get; set; } // Enum
+    public EncodeFormat EncodeMediaAs { get; set; }
     public DateTime LastReadTime { get; set; }
     public bool ActiveKavitaPlusSubscription { get; set; }
     public bool UsingRestrictedProfiles { get; set; }
+    
+    public DateTime Created { get; set; }
+    public DateTime LastModified { get; set; }
 
     public ICollection<LibraryStat> Libraries { get; set; }
     public ICollection<RelationshipStat> Relationships { get; set; }
     public ICollection<UserStat> Users { get; set; }
+    
 }

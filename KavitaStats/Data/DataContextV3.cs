@@ -1,9 +1,6 @@
 ﻿using System;
-using KavitaStats.Entities;
 using KavitaStats.Entities.Interfaces;
 using KavitaStats.Entities.V3;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -12,11 +9,17 @@ namespace KavitaStats.Data;
 /// <summary>
 /// V3 is very different, we will use a completely different context to store it
 /// </summary>
-public sealed class DataContextV3 : IdentityDbContext<AppUser, AppRole, int,
-    IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
-    IdentityRoleClaim<int>, IdentityUserToken<int>>
+public sealed class DataContextV3 : DbContext
 {
-    public DbSet<AppUser> AppUser { get; set; }
+    public DbSet<ServerStat> ServerStat { get; set; }
+    public DbSet<RelationshipStat> RelationshipStat { get; set; }
+    public DbSet<UserStat> UserStat { get; set; }
+    public DbSet<LibraryStat> LibraryStat { get; set; }
+    public DbSet<LibraryStatFileTypeGroup> LibraryStatFileTypeGroup { get; set; }
+    public DbSet<UserStatDevicePlatform> UserStatDevicePlatform { get; set; }
+    public DbSet<UserStatRole> UserStatRole { get; set; }
+    public DbSet<UserAgeRestriction> UserAgeRestriction { get; set; }
+    
 
         
     public DataContextV3(DbContextOptions options) : base(options)
@@ -29,40 +32,36 @@ public sealed class DataContextV3 : IdentityDbContext<AppUser, AppRole, int,
     {
         base.OnModelCreating(builder);
         
-        builder.Entity<ServerInfoV3>()
-            .HasKey(s => s.InstallId);
+        // ServerInfo configuration
+        builder.Entity<ServerStat>()
+            .HasKey(s => s.Id); 
 
-        builder.Entity<RelationshipStat>()
-            .HasOne(r => r.Server)
-            .WithMany(s => s.Relationships)
-            .HasForeignKey(r => r.InstallId);
+        builder.Entity<ServerStat>()
+            .HasIndex(s => s.InstallId)
+            .IsUnique();
 
+        // LibraryStat configuration
         builder.Entity<LibraryStat>()
-            .HasOne(l => l.Server)
+            .HasOne(l => l.ServerStat)
             .WithMany(s => s.Libraries)
-            .HasForeignKey(l => l.InstallId);
+            .HasForeignKey(l => l.ServerStatId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Repeat for other entities
+        builder.Entity<RelationshipStat>()
+            .HasOne(r => r.ServerStat)
+            .WithMany(s => s.Relationships)
+            .HasForeignKey(r => r.ServerStatId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<UserStat>()
-            .HasOne(u => u.Server)
+            .HasOne(u => u.ServerStat)
             .WithMany(s => s.Users)
-            .HasForeignKey(u => u.InstallId);
-        
-
-
-        builder.Entity<AppUser>()
-            .HasMany(ur => ur.UserRoles)
-            .WithOne(u => u.User)
-            .HasForeignKey(ur => ur.UserId)
-            .IsRequired();
-
-        builder.Entity<AppRole>()
-            .HasMany(ur => ur.UserRoles)
-            .WithOne(u => u.Role)
-            .HasForeignKey(ur => ur.RoleId)
-            .IsRequired();
+            .HasForeignKey(u => u.ServerStatId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
-        
-    void OnEntityTracked(object sender, EntityTrackedEventArgs e)
+
+    private static void OnEntityTracked(object sender, EntityTrackedEventArgs e)
     {
         if (!e.FromQuery && e.Entry.State == EntityState.Added && e.Entry.Entity is IHasDate entity)
         {
@@ -76,7 +75,7 @@ public sealed class DataContextV3 : IdentityDbContext<AppUser, AppRole, int,
 
     }
 
-    void OnEntityStateChanged(object sender, EntityStateChangedEventArgs e)
+    private static void OnEntityStateChanged(object sender, EntityStateChangedEventArgs e)
     {
         if (e.NewState == EntityState.Modified && e.Entry.Entity is IHasDate entity)
             entity.LastModified = DateTime.UtcNow;

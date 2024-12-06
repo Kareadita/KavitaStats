@@ -6,6 +6,7 @@ using KavitaStats.Attributes;
 using KavitaStats.Data;
 using KavitaStats.DTOs;
 using KavitaStats.Entities;
+using KavitaStats.Entities.V2;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

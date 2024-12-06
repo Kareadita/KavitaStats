@@ -2,11 +2,10 @@
 
 namespace KavitaStats.Entities.V3;
 
-public class UserAgeRestriction
+public class UserStatDevicePlatform
 {
     public int Id { get; set; }
-    public AgeRating AgeRating { get; set; }
-    public bool IncludeUnknowns { get; set; }
+    public DevicePlatform DevicePlatform { get; set; }
     
     public int UserStatId { get; set; }
     public virtual UserStat UserStat { get; set; }

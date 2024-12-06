@@ -15,23 +15,19 @@ public class UiController : BaseApiController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly DataContext _dataContext;
+    private readonly DataContextV3 _dataContextV3;
 
-    public UiController(IUnitOfWork unitOfWork, DataContext dataContext)
+    public UiController(IUnitOfWork unitOfWork, DataContext dataContext, DataContextV3 dataContextV3)
     {
         _unitOfWork = unitOfWork;
         _dataContext = dataContext;
+        _dataContextV3 = dataContextV3;
     }
 
     [HttpGet("total-users")]
     public async Task<ActionResult<int>> GetTotalUserCount()
     {
-        return await _dataContext.StatRecord
-            .Select(s => s.InstallId)
-            .Distinct()
-            .AsNoTracking()
-            .CountAsync();
-        
-        // select count((select distinct installId from StatRecord)) from StatRecord;
+        return Ok(await GetTotalInstalls());
     }
 
     [HttpGet("volumes-in-a-series")]
@@ -92,11 +88,11 @@ public class UiController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpGet("shield-badge")]
-    public async Task<ActionResult<ShieldBadgeDto>> GetActiveInstalls()
+    public async Task<ActionResult<ShieldBadgeDto>> GetServerBadge()
     {
         return Ok(new ShieldBadgeDto()
         {
-            Message = FormatNumberCompact(await _dataContext.StatRecord.CountAsync())
+            Message = FormatNumberCompact(await GetTotalInstalls())
         });
     }
     
@@ -114,4 +110,47 @@ public class UiController : BaseApiController
     
     // I need install growth over time (this is by created date vs install version)
     // Pie graph of Installs vs OS/Version/ 
+    
+    private async Task<int> GetActiveInstalls()
+    {
+        var v2InstallIds = await _dataContext.StatRecord
+            .Where(s => s.LastModified >= DateTime.Now.Subtract(TimeSpan.FromDays(5)))
+            .Select(s => s.InstallId)
+            .Distinct()
+            .AsNoTracking()
+            .ToListAsync();
+        
+        var v2Users =  v2InstallIds.Count;
+        
+        var v3Users =  await _dataContextV3.ServerStat
+            .Where(s => s.LastModified >= DateTime.Now.Subtract(TimeSpan.FromDays(5)))
+            .Select(s => s.InstallId)
+            .Where(s => !v2InstallIds.Contains(s))
+            .Distinct()
+            .AsNoTracking()
+            .CountAsync();
+        
+        return v2Users + v3Users;
+    }
+
+    private async Task<int> GetTotalInstalls()
+    {
+        var v2InstallIds = await _dataContext.StatRecord
+            .Select(s => s.InstallId)
+            .Distinct()
+            .AsNoTracking()
+            .ToListAsync();
+        
+        var v2Users =  v2InstallIds.Count;
+        
+        var v3Users =  await _dataContextV3.ServerStat
+            .Select(s => s.InstallId)
+            .Where(s => !v2InstallIds.Contains(s))
+            
+            .Distinct()
+            .AsNoTracking()
+            .CountAsync();
+        
+        return v2Users + v3Users;
+    }
 }

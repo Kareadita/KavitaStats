@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using KavitaStats.DTOs.V2;
 using KavitaStats.Entities.Enum;
+using KavitaStats.Entities.V3;
 
 namespace KavitaStats.DTOs.V3;
 
@@ -26,7 +27,7 @@ public class LibraryStatV3
     /// Type of the Library
     /// </summary>
     public LibraryType LibraryType { get; set; }
-    public ICollection<FileFormatDto> FileTypes { get; set; }
+    public ICollection<FileTypeGroup> FileTypes { get; set; }
     /// <summary>
     /// Last time library was fully scanned
     /// </summary>
@@ -35,6 +36,4 @@ public class LibraryStatV3
     /// Number of folders the library has
     /// </summary>
     public int NumberOfFolders { get; set; }
-
-
 }

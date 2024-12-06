@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using KavitaStats.Entities.Enum;
 using KavitaStats.Entities.Interfaces;
+using KavitaStats.Entities.V2;
 
 namespace KavitaStats.Entities;
 
