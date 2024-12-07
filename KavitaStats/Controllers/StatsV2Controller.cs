@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace KavitaStats.Controllers;
 
 [ApiKeyAuthentication]
-[Route("api/v2/[controller]")]
+[Route("api/v2/stats")]
 public class StatsV2Controller : BaseApiController
 {
     private readonly ILogger<StatsV2Controller> _logger;
