@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using KavitaStats.Entities;
+using KavitaStats.Entities.V2;
 using Microsoft.EntityFrameworkCore;
 
 namespace KavitaStats.Data.Repository;

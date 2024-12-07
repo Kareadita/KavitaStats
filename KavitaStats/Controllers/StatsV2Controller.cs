@@ -6,22 +6,22 @@ using KavitaStats.Attributes;
 using KavitaStats.Data;
 using KavitaStats.DTOs;
 using KavitaStats.Entities;
+using KavitaStats.Entities.V2;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using static Serilog.Context.LogContext;
 
 namespace KavitaStats.Controllers;
 
 [ApiKeyAuthentication]
-[Route("api/v2/[controller]")]
-public class StatsController : BaseApiController
+[Route("api/v2/stats")]
+public class StatsV2Controller : BaseApiController
 {
-    private readonly ILogger<StatsController> _logger;
+    private readonly ILogger<StatsV2Controller> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly DataContext _context;
 
-    public StatsController(ILogger<StatsController> logger, IUnitOfWork unitOfWork, DataContext context)
+    public StatsV2Controller(ILogger<StatsV2Controller> logger, IUnitOfWork unitOfWork, DataContext context)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;

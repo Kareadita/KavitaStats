@@ -34,9 +34,12 @@ public static class Program
             using var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<DataContext>();
-
+            var contextV3 = services.GetRequiredService<DataContextV3>();
+            
             // Apply all migrations on startup
             await context.Database.MigrateAsync();
+            await contextV3.Database.MigrateAsync();
+            
 
             await host.RunAsync();
         }

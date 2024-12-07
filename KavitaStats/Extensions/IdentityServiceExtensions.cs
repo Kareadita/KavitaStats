@@ -15,6 +15,7 @@ public static class IdentityServiceExtensions
 {
     public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
     {
+        // Technically this API does not need any of this
         services.AddIdentityCore<AppUser>(opt =>
             {
                 // Change password / signin requirements here

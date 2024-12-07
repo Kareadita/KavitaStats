@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using KavitaStats.Entities.Enum;
+using KavitaStats.Entities.Interfaces;
+using KavitaStats.Entities.V2;
 
-namespace KavitaStats.DTOs;
+namespace KavitaStats.Entities;
 
 /// <summary>
 /// Represents information about a Kavita Installation
 /// </summary>
-public class StatRecordDto
+public class StatRecord : IHasDate, IHasUpdateCounter
 {
+    /// <summary>
+    /// Primary Key
+    /// </summary>
+    public int Id { get; set; }
     /// <summary>
     /// Unique Id that represents a unique install
     /// </summary>
     public string InstallId { get; set; }
-    public string Os { get; set; }
     /// <summary>
     /// If the Kavita install is using Docker
     /// </summary>
@@ -27,51 +32,56 @@ public class StatRecordDto
     /// </summary>
     public string KavitaVersion { get; set; }
     /// <summary>
-    /// Number of Cores on the instance
+    /// Number of Cores on the machine
     /// </summary>
     public int NumOfCores { get; set; }
     /// <summary>
-    /// The number of libraries on the instance
+    /// Last time we heard from the Kavita instance
     /// </summary>
-    public int NumberOfLibraries { get; set; }
+    /// <remarks>This is required because if nothing changes on the User instance, then Last Modified wont change.</remarks>
+    public DateTime LastUpdated { get; set; }
     /// <summary>
-    /// Does any user have bookmarks
+    /// If the user has any bookmarks on their install
     /// </summary>
     public bool HasBookmarks { get; set; }
     /// <summary>
+    /// The number of libraries
+    /// </summary>
+    public int NumberOfLibraries { get; set; }
+        
+    /// <summary>
     /// The site theme the install is using
     /// </summary>
-    /// <remarks>Introduced in v0.5.2</remarks>
     public string ActiveSiteTheme { get; set; }
+        
     /// <summary>
     /// The reading mode the main user has as a preference
     /// </summary>
-    /// <remarks>Introduced in v0.5.2</remarks>
     public ReaderMode MangaReaderMode { get; set; }
+        
     /// <summary>
     /// Number of users on the install
     /// </summary>
-    /// <remarks>Introduced in v0.5.2</remarks>
     public int NumberOfUsers { get; set; }
+        
     /// <summary>
     /// Number of collections on the install
     /// </summary>
-    /// <remarks>Introduced in v0.5.2</remarks>
     public int NumberOfCollections { get; set; }
+        
     /// <summary>
     /// Number of reading lists on the install (Sum of all users)
     /// </summary>
-    /// <remarks>Introduced in v0.5.2</remarks>
     public int NumberOfReadingLists { get; set; }
+        
     /// <summary>
     /// Is OPDS enabled
     /// </summary>
-    /// <remarks>Introduced in v0.5.2</remarks>
     public bool OPDSEnabled { get; set; }
+        
     /// <summary>
     /// Total number of files in the instance
     /// </summary>
-    /// <remarks>Introduced in v0.5.2</remarks>
     public int TotalFiles { get; set; }
     /// <summary>
     /// Total number of Genres in the instance
@@ -83,6 +93,12 @@ public class StatRecordDto
     /// </summary>
     /// <remarks>Introduced in v0.5.4</remarks>
     public int TotalPeople { get; set; }
+    /// <summary>
+    /// Is this instance storing bookmarks as WebP
+    /// </summary>
+    /// <remarks>Introduced in v0.5.4 and removed in v0.7.2.5/v0.7.3</remarks>
+    [Obsolete("Use EncodeMediaAs")]
+    public bool StoreBookmarksAsWebP { get; set; }
     /// <summary>
     /// Number of users on this instance using Card Layout
     /// </summary>
@@ -113,27 +129,31 @@ public class StatRecordDto
     /// </summary>
     /// <remarks>Introduced in v0.5.4</remarks>
     public bool UsingSeriesRelationships { get; set; }
-
+    /// <summary>
+    /// If the Instance has opted out of Reporting stats
+    /// </summary>
+    /// <remarks>Introduced in v0.6.0</remarks>
+    public bool OptedOut { get; set; }
     /// <summary>
     /// A list of background colors set on the instance
     /// </summary>
     /// <remarks>Introduced in v0.6.0</remarks>
-    public ICollection<string> MangaReaderBackgroundColors { get; set; } = Array.Empty<string>();
+    public ICollection<Color> MangaReaderBackgroundColors { get; set; }
     /// <summary>
     /// A list of Page Split defaults being used on the instance
     /// </summary>
     /// <remarks>Introduced in v0.6.0</remarks>
-    public ICollection<PageSplitOption> MangaReaderPageSplittingModes { get; set; } = Array.Empty<PageSplitOption>();
+    public ICollection<PageSplit> MangaReaderPageSplittingModes { get; set; }
     /// <summary>
     /// A list of Layout Mode defaults being used on the instance
     /// </summary>
     /// <remarks>Introduced in v0.6.0</remarks>
-    public ICollection<ReaderMode> MangaReaderLayoutModes { get; set; } = Array.Empty<ReaderMode>();
+    public ICollection<MangaReaderLayoutMode> MangaReaderLayoutModes { get; set; }
     /// <summary>
     /// A list of file formats existing in the instance
     /// </summary>
     /// <remarks>Introduced in v0.6.0</remarks>
-    public ICollection<FileFormatDto> FileFormats { get; set; } = Array.Empty<FileFormatDto>();
+    public ICollection<FileFormat> FileFormats { get; set; }
     /// <summary>
     /// If there is at least one user that is using an age restricted profile on the instance
     /// </summary>
@@ -170,6 +190,12 @@ public class StatRecordDto
     /// <remarks>Introduced in v0.7.0</remarks>
     public long TotalReadingHours { get; set; }
     /// <summary>
+    /// Is the Server saving covers as WebP
+    /// </summary>
+    /// <remarks>Added in v0.7.0 and removed in v0.7.2.5/v0.7.3</remarks>
+    [Obsolete("Use EncodeMediaAs")]
+    public bool StoreCoversAsWebP { get; set; }
+    /// <summary>
     /// The encoding the server is using to save media
     /// </summary>
     /// <remarks>Added in v0.7.3</remarks>
@@ -179,4 +205,13 @@ public class StatRecordDto
     /// </summary>
     /// <remarks>Added in v0.7.4</remarks>
     public DateTime LastReadTime { get; set; }
+
+        
+    /// <summary>
+    /// How many updates this row has had
+    /// </summary>
+    public long UpdateCount { get; set; } = 0;
+
+    public DateTime Created { get; set; }
+    public DateTime LastModified { get; set; }
 }
