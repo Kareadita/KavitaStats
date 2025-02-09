@@ -57,6 +57,7 @@ public class StatsV3Controller : BaseApiController
             .Include(s => s.Users)
             .AsSplitQuery()
             .FirstOrDefaultAsync(s => s.InstallId == dto.InstallId);
+        
         if (existingRecord != null)
         {
             _context.Entry(existingRecord).State = EntityState.Modified;
@@ -101,6 +102,7 @@ public class StatsV3Controller : BaseApiController
         existingRecord.LastReadTime = dto.LastReadTime;
         existingRecord.ActiveKavitaPlusSubscription = dto.ActiveKavitaPlusSubscription;
         existingRecord.UsingRestrictedProfiles = dto.UsingRestrictedProfiles;
+        existingRecord.MatchedMetadataEnabled = dto.UsingRestrictedProfiles;
         
         // Update Libraries
         existingRecord.Libraries ??= new List<LibraryStat>();
@@ -118,10 +120,7 @@ public class StatsV3Controller : BaseApiController
                 LibraryType = libraryDto.LibraryType,
                 LastScanned = libraryDto.LastScanned,
                 NumberOfFolders = libraryDto.NumberOfFolders,
-                FileTypes = libraryDto.FileTypes.Select(t => new LibraryStatFileTypeGroup()
-                {
-                    FileType = t
-                }).ToList()
+                FileTypes = libraryDto.FileTypes.ToList()
             });
         }
         
@@ -164,8 +163,8 @@ public class StatsV3Controller : BaseApiController
                 HasMALToken = userDto.HasMALToken,
                 SmartFilterCreatedCount = userDto.SmartFilterCreatedCount,
                 IsSharingReviews = userDto.IsSharingReviews,
-                DevicePlatforms = userDto.DevicePlatforms.Select(d => new UserStatDevicePlatform() {DevicePlatform = d}).ToList(),
-                Roles = userDto.Roles.Select(r => new UserStatRole() { Role = r}).ToList()
+                DevicePlatforms = userDto.DevicePlatforms.ToList(),
+                Roles = userDto.Roles.ToList()
             });
         }
         

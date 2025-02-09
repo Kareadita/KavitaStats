@@ -24,8 +24,8 @@ public class UserStat
     public int SmartFilterCreatedCount { get; set; }
     public bool IsSharingReviews { get; set; }
 
-    public ICollection<UserStatDevicePlatform> DevicePlatforms { get; set; } 
-    public ICollection<UserStatRole> Roles { get; set; } 
+    public List<DevicePlatform> DevicePlatforms { get; set; } 
+    public List<string> Roles { get; set; } 
     
     public int ServerStatId { get; set; }
     public virtual ServerStat ServerStat { get; set; }
