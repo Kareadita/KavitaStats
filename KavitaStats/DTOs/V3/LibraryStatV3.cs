@@ -27,7 +27,7 @@ public class LibraryStatV3
     /// Type of the Library
     /// </summary>
     public LibraryType LibraryType { get; set; }
-    public ICollection<FileTypeGroup> FileTypes { get; set; }
+    public List<FileTypeGroup> FileTypes { get; set; }
     /// <summary>
     /// Last time library was fully scanned
     /// </summary>

@@ -18,7 +18,7 @@ public class LibraryStat
     public DateTime LastScanned { get; set; }
     public int NumberOfFolders { get; set; }
     
-    public ICollection<LibraryStatFileTypeGroup> FileTypes { get; set; }
+    public List<FileTypeGroup> FileTypes { get; set; }
     
     public int ServerStatId { get; set; }
     public ServerStat ServerStat { get; set; }
