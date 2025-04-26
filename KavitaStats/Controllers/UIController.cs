@@ -27,7 +27,26 @@ public class UiController : BaseApiController
     [HttpGet("total-users")]
     public async Task<ActionResult<int>> GetTotalUserCount()
     {
-        return Ok(await GetTotalInstalls());
+        return Ok(await GetActiveInstalls());
+    }    
+    
+    /// <summary>
+    /// For a given theme, return the number of active users with theme active
+    /// </summary>
+    /// <remarks>This is used on ThemeRepo</remarks>
+    /// <param name="theme"></param>
+    /// <returns></returns>
+    [HttpGet("theme-users")]
+    public async Task<ActionResult<ShieldBadgeDto>> GetUsersByTheme(string theme)
+    {
+        var count = await _dataContextV3.UserStat.Where(u => u.ActiveTheme == theme)
+            .CountAsync();
+        
+        return Ok(new ShieldBadgeDto()
+        {
+            Label = "Active",
+            Message = FormatNumberCompact(count)
+        });
     }
 
     [HttpGet("volumes-in-a-series")]
@@ -95,7 +114,7 @@ public class UiController : BaseApiController
             Message = FormatNumberCompact(await GetTotalInstalls())
         });
     }
-    
+
     private static string FormatNumberCompact(long number)
     {
         return number switch
@@ -113,8 +132,9 @@ public class UiController : BaseApiController
     
     private async Task<int> GetActiveInstalls()
     {
+        var cutoff = DateTime.Now.Subtract(TimeSpan.FromDays(10));
         var v2InstallIds = await _dataContext.StatRecord
-            .Where(s => s.LastModified >= DateTime.Now.Subtract(TimeSpan.FromDays(5)))
+            .Where(s => s.LastModified >= cutoff)
             .Select(s => s.InstallId)
             .Distinct()
             .AsNoTracking()
@@ -123,7 +143,7 @@ public class UiController : BaseApiController
         var v2Users =  v2InstallIds.Count;
         
         var v3Users =  await _dataContextV3.ServerStat
-            .Where(s => s.LastModified >= DateTime.Now.Subtract(TimeSpan.FromDays(5)))
+            .Where(s => s.LastModified >= cutoff)
             .Select(s => s.InstallId)
             .Where(s => !v2InstallIds.Contains(s))
             .Distinct()
