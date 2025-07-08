@@ -103,6 +103,7 @@ public class StatsV3Controller : BaseApiController
         existingRecord.ActiveKavitaPlusSubscription = dto.ActiveKavitaPlusSubscription;
         existingRecord.UsingRestrictedProfiles = dto.UsingRestrictedProfiles;
         existingRecord.MatchedMetadataEnabled = dto.UsingRestrictedProfiles;
+        existingRecord.OidcEnabled = dto.OidcEnabled;
         
         // Update Libraries
         existingRecord.Libraries ??= new List<LibraryStat>();
@@ -120,7 +121,8 @@ public class StatsV3Controller : BaseApiController
                 LibraryType = libraryDto.LibraryType,
                 LastScanned = libraryDto.LastScanned,
                 NumberOfFolders = libraryDto.NumberOfFolders,
-                FileTypes = libraryDto.FileTypes.ToList()
+                FileTypes = libraryDto.FileTypes.ToList(),
+                EnabledMetadata = libraryDto.EnabledMetadata
             });
         }
         
@@ -164,7 +166,8 @@ public class StatsV3Controller : BaseApiController
                 SmartFilterCreatedCount = userDto.SmartFilterCreatedCount,
                 IsSharingReviews = userDto.IsSharingReviews,
                 DevicePlatforms = userDto.DevicePlatforms.ToList(),
-                Roles = userDto.Roles.ToList()
+                Roles = userDto.Roles.ToList(),
+                Owner = userDto.Owner
             });
         }
         
