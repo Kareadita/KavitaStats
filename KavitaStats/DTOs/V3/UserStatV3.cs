@@ -79,7 +79,7 @@ public class UserStatV3
     /// <summary>
     /// Who manages the user (OIDC, Kavita)
     /// </summary>
-    public UserOwner Owner { get; set; }
+    public IdentityProvider IdentityProvider { get; set; }
 
 
 }

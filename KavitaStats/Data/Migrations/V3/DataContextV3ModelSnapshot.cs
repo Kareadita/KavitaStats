@@ -260,7 +260,7 @@ namespace KavitaStats.Data.Migrations.V3
                     b.Property<string>("Locale")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Owner")
+                    b.Property<int>("IdentityProvider")
                         .HasColumnType("INTEGER");
 
                     b.Property<float>("PercentageOfLibrariesHasAccess")

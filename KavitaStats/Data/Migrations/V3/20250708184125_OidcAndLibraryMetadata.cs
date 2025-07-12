@@ -11,7 +11,7 @@ namespace KavitaStats.Data.Migrations.V3
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "Owner",
+                name: "IdentityProvider",
                 table: "UserStat",
                 type: "INTEGER",
                 nullable: false,
@@ -36,7 +36,7 @@ namespace KavitaStats.Data.Migrations.V3
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Owner",
+                name: "IdentityProvider",
                 table: "UserStat");
 
             migrationBuilder.DropColumn(

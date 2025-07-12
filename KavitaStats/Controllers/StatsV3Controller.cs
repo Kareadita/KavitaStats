@@ -167,7 +167,7 @@ public class StatsV3Controller : BaseApiController
                 IsSharingReviews = userDto.IsSharingReviews,
                 DevicePlatforms = userDto.DevicePlatforms.ToList(),
                 Roles = userDto.Roles.ToList(),
-                Owner = userDto.Owner
+                IdentityProvider = userDto.IdentityProvider
             });
         }
         
