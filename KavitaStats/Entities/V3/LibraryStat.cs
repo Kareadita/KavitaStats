@@ -14,6 +14,7 @@ public class LibraryStat
     public bool UsingExcludePatterns { get; set; }
     public bool CreateCollectionsFromMetadata { get; set; }
     public bool CreateReadingListsFromMetadata { get; set; }
+    public bool EnabledMetadata { get; set; }
     public LibraryType LibraryType { get; set; }
     public DateTime LastScanned { get; set; }
     public int NumberOfFolders { get; set; }
