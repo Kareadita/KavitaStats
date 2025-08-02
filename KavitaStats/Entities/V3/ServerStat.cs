@@ -44,6 +44,7 @@ public class ServerStat : IHasDate
     public bool ActiveKavitaPlusSubscription { get; set; }
     public bool UsingRestrictedProfiles { get; set; }
     public bool MatchedMetadataEnabled { get; set; }
+    public bool OidcEnabled { get; set; }
     
     public DateTime Created { get; set; }
     public DateTime LastModified { get; set; }

@@ -27,6 +27,8 @@ public class UserStat
     public List<DevicePlatform> DevicePlatforms { get; set; } 
     public List<string> Roles { get; set; } 
     
+    public IdentityProvider IdentityProvider { get; set; }
+    
     public int ServerStatId { get; set; }
     public virtual ServerStat ServerStat { get; set; }
 }
