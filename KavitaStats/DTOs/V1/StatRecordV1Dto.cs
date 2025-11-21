@@ -11,7 +11,7 @@ public class StatRecordV1Dto
     public string InstallId { get; set; }
     public DateTime LastUpdate { get; set; }
     public ServerInfo ServerInfo { get; set; }
-    public List<ClientInfo> ClientsInfo { get; set; } = new List<ClientInfo>();
+    public List<ClientInfo> ClientsInfo { get; set; } = [];
     public UsageInfo UsageInfo { get; set; }
     public Guid Id { get; set; }
 }
