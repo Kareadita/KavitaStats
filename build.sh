@@ -30,8 +30,7 @@ Build()
 
 Package()
 {
-    local framework="$1"
-    local runtime="$2"
+    local runtime="$1"
     local lOutputFolder=../_output/"$runtime"/KavitaStats
 
     ProgressStart "Creating $runtime Package for $framework"
@@ -39,8 +38,8 @@ Package()
     # TODO: Use no-restore? Because Build should have already done it for us
     echo "Building"
     cd KavitaStats
-    echo dotnet publish -c Release --no-restore --self-contained --runtime $runtime -o "$lOutputFolder" --framework $framework
-    dotnet publish -c Release --no-restore --self-contained --runtime $runtime -o "$lOutputFolder" --framework $framework
+    echo dotnet publish -c Release --no-restore --self-contained --runtime $runtime -o "$lOutputFolder"
+    dotnet publish -c Release --no-restore --self-contained --runtime $runtime -o "$lOutputFolder"
 
     echo "Copying LICENSE"
     cp ../LICENSE "$lOutputFolder"/LICENSE.txt
@@ -68,15 +67,15 @@ fi
 
 #Build for x64
 Build "linux-x64"
-Package "net9.0" "linux-x64"
+Package "linux-x64"
 cd "$dir"
 
 #Build for arm
 Build "linux-arm"
-Package "net9.0" "linux-arm"
+Package "linux-arm"
 cd "$dir"
 
 #Build for arm64
 Build "linux-arm64"
-Package "net9.0" "linux-arm64"
+Package "linux-arm64"
 cd "$dir"
