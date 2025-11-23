@@ -8,7 +8,7 @@ COPY _output/*.tar.gz /files/
 COPY copy_runtime.sh /copy_runtime.sh
 RUN /copy_runtime.sh
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 

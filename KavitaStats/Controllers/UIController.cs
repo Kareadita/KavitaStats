@@ -133,44 +133,50 @@ public class UiController : BaseApiController
     private async Task<int> GetActiveInstalls()
     {
         var cutoff = DateTime.Now.Subtract(TimeSpan.FromDays(10));
+    
         var v2InstallIds = await _dataContext.StatRecord
             .Where(s => s.LastModified >= cutoff)
             .Select(s => s.InstallId)
             .Distinct()
-            .AsNoTracking()
             .ToListAsync();
-        
-        var v2Users =  v2InstallIds.Count;
-        
-        var v3Users =  await _dataContextV3.ServerStat
+
+        var v2Set = v2InstallIds.ToHashSet();
+
+        var v3UniqueCount = await _dataContextV3.ServerStat
             .Where(s => s.LastModified >= cutoff)
             .Select(s => s.InstallId)
-            .Where(s => !v2InstallIds.Contains(s))
             .Distinct()
-            .AsNoTracking()
-            .CountAsync();
-        
-        return v2Users + v3Users;
+            .ToListAsync()
+            .ContinueWith(t => t.Result.Count(id => !v2Set.Contains(id)));
+
+        return v2InstallIds.Count + v3UniqueCount;
     }
 
     private async Task<int> GetTotalInstalls()
     {
-        var v2InstallIds = await _dataContext.StatRecord
+        var v2Count = await _dataContext.StatRecord
             .Select(s => s.InstallId)
             .Distinct()
-            .AsNoTracking()
-            .ToListAsync();
-        
-        var v2Users =  v2InstallIds.Count;
-        
-        var v3Users =  await _dataContextV3.ServerStat
-            .Select(s => s.InstallId)
-            .Where(s => !v2InstallIds.Contains(s))
-            
-            .Distinct()
-            .AsNoTracking()
             .CountAsync();
-        
-        return v2Users + v3Users;
+
+        var v3InstallIds = await _dataContextV3.ServerStat
+            .Select(s => s.InstallId)
+            .Distinct()
+            .ToListAsync();
+
+        // Batch the overlap check to avoid massive IN clauses
+        var overlapCount = 0;
+        const int batchSize = 500;
+    
+        foreach (var batch in v3InstallIds.Chunk(batchSize))
+        {
+            overlapCount += await _dataContext.StatRecord
+                .Where(s => batch.Contains(s.InstallId))
+                .Select(s => s.InstallId)
+                .Distinct()
+                .CountAsync();
+        }
+
+        return v2Count + v3InstallIds.Count - overlapCount;
     }
 }
