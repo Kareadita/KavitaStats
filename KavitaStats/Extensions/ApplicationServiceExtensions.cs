@@ -1,5 +1,6 @@
 ﻿using KavitaStats.Data;
 using KavitaStats.Data.Helpers;
+using KavitaStats.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,39 +13,43 @@ namespace KavitaStats.Extensions;
 
 public static class ApplicationServiceExtensions
 {
-    public static void AddApplicationServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
+    extension(IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+        public void AddApplicationServices(IConfiguration config, IWebHostEnvironment env)
+        {
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ITaskScheduler, TaskScheduler>();
 
-        services.AddLogging(config);
-        services.AddSqLite(config, env);
-        services.AddSignalR();
-    }
+            services.AddLogging(config);
+            services.AddSqLite(config, env);
+            services.AddSignalR();
+        }
 
-    private static void AddSqLite(this IServiceCollection services, IConfiguration config,
-        IHostEnvironment env)
-    {
-        services.AddDbContextPool<DataContext>(options =>
+        private void AddSqLite(IConfiguration config,
+            IHostEnvironment env)
         {
-            options.UseSqlite(config.GetConnectionString("DefaultConnection"));
-            options.EnableSensitiveDataLogging(env.IsDevelopment());
-        });
+            services.AddDbContextPool<DataContext>(options =>
+            {
+                options.UseSqlite(config.GetConnectionString("DefaultConnection"));
+                options.EnableSensitiveDataLogging(env.IsDevelopment());
+            });
         
-        services.AddDbContextPool<DataContextV3>(options =>
-        {
-            options.UseSqlite(config.GetConnectionString("DefaultConnectionV3"));
-            options.EnableSensitiveDataLogging(env.IsDevelopment());
-        });
-    }
+            services.AddDbContextPool<DataContextV3>(options =>
+            {
+                options.UseSqlite(config.GetConnectionString("DefaultConnectionV3"));
+                options.EnableSensitiveDataLogging(env.IsDevelopment());
+            });
+        }
 
-    private static void AddLogging(this IServiceCollection services, IConfiguration config)
-    {
-        services.AddLogging(loggingBuilder =>
+        private void AddLogging(IConfiguration config)
         {
-            var loggingSection = config.GetSection("Logging");
-            loggingBuilder.AddFile(loggingSection);
-        });
+            services.AddLogging(loggingBuilder =>
+            {
+                var loggingSection = config.GetSection("Logging");
+                loggingBuilder.AddFile(loggingSection);
+            });
+        }
     }
 }
