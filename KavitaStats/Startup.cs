@@ -2,7 +2,9 @@ using System;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using Hangfire;
 using KavitaStats.Extensions;
+using KavitaStats.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -25,6 +27,9 @@ public class Startup
     {
         _config = config;
         _env = env;
+        
+        // Disable Hangfire Automatic Retry
+        GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 0 });
     }
         
     
@@ -70,6 +75,14 @@ public class Startup
         });
 
         services.AddResponseCaching();
+        
+        services.AddHangfire(configuration => configuration
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseInMemoryStorage());
+        services.AddHangfireServer();
+        
+        services.AddHostedService<StartupTasksHostedService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,6 +94,8 @@ public class Startup
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "KavitaStats v3"));
+            
+            app.UseHangfireDashboard();
         }
             
         app.UseResponseCompression();
