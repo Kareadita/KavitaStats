@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KavitaStats.Data.Migrations.V3
 {
     [DbContext(typeof(DataContextV3))]
-    [Migration("20251229190434_WeeklySnapshots")]
+    [Migration("20251229191639_WeeklySnapshots")]
     partial class WeeklySnapshots
     {
         /// <inheritdoc />
@@ -42,6 +42,9 @@ namespace KavitaStats.Data.Migrations.V3
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Date")
+                        .IsUnique();
 
                     b.ToTable("HistoricalSnapshot");
                 });

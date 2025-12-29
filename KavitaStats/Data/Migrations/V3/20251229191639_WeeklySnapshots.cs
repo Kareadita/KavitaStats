@@ -27,6 +27,12 @@ namespace KavitaStats.Data.Migrations.V3
                 {
                     table.PrimaryKey("PK_HistoricalSnapshot", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HistoricalSnapshot_Date",
+                table: "HistoricalSnapshot",
+                column: "Date",
+                unique: true);
         }
 
         /// <inheritdoc />

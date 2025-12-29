@@ -1,10 +1,12 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace KavitaStats.Entities;
 
 /// <summary>
 /// A weekly snapshot of the data to help show growth over time
 /// </summary>
+[Index("Date", IsUnique = true)]
 public class HistoricalSnapshot
 {
     public int Id { get; set; }

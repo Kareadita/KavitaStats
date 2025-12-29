@@ -40,6 +40,9 @@ namespace KavitaStats.Data.Migrations.V3
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Date")
+                        .IsUnique();
+
                     b.ToTable("HistoricalSnapshot");
                 });
 
