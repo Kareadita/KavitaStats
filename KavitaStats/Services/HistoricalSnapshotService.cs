@@ -12,28 +12,13 @@ public class HistoricalSnapshotService(DataContextV3 context)
     public async Task TakeHistoricalSnapshot()
     {
         var today = DateTime.UtcNow.Date;
-        
-        // Check if we already have a snapshot for this week
-        var existingSnapshot = await context.HistoricalSnapshot
-            .AnyAsync(s => s.Date == today);
-        
-        if (existingSnapshot) return;
-        
-        var currentStats = await context.ServerStat
-            .Where(s => !s.OptedOut)
-            .Select(_ => new
-            {
-                UniqueInstalls = context.ServerStat.Count(s => !s.OptedOut),
-                UniqueUsers = context.ServerStat
-                    .Where(s => !s.OptedOut)
-                    .SelectMany(s => s.Users)
-                    .Count()
-            })
-            .FirstOrDefaultAsync();
 
-        var uniqueInstalls = currentStats?.UniqueInstalls ?? 0;
-        var uniqueUsers = currentStats?.UniqueUsers ?? 0;
-        
+        var uniqueInstalls = await context.ServerStat.CountAsync(s => !s.OptedOut);
+        var uniqueUsers = await context.ServerStat
+            .Where(s => !s.OptedOut)
+            .SelectMany(s => s.Users)
+            .CountAsync();
+
         var previousSnapshot = await context.HistoricalSnapshot
             .OrderByDescending(s => s.Date)
             .FirstOrDefaultAsync();
