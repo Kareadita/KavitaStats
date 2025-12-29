@@ -36,7 +36,10 @@ public class TaskScheduler : ITaskScheduler
     public void ScheduleTasks()
     {
         RecurringJob.AddOrUpdate("cleanup-records", () => CleanupRecords(),
-            Cron.Daily, RecurringJobOptions);
+            Cron.Daily, RecurringJobOptions);        
+        
+        RecurringJob.AddOrUpdate<HistoricalSnapshotService>("historical-snapshot", job => job.TakeHistoricalSnapshot(),
+            Cron.Weekly, RecurringJobOptions);
     }
 
     public async Task CleanupRecords()

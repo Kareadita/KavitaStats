@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using KavitaStats.Entities;
 using KavitaStats.Entities.Enum;
 using KavitaStats.Entities.Interfaces;
 using KavitaStats.Entities.V3;
@@ -20,6 +21,7 @@ public sealed class DataContextV3 : DbContext
     public DbSet<UserStat> UserStat { get; set; }
     public DbSet<LibraryStat> LibraryStat { get; set; }
     public DbSet<UserAgeRestriction> UserAgeRestriction { get; set; }
+    public DbSet<HistoricalSnapshot> HistoricalSnapshot { get; set; }
         
     public DataContextV3(DbContextOptions options) : base(options)
     {
