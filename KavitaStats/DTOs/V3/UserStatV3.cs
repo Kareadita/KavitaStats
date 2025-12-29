@@ -4,6 +4,7 @@ using KavitaStats.Entities;
 using KavitaStats.Entities.Enum;
 
 namespace KavitaStats.DTOs.V3;
+#nullable enable
 
 public class UserStatV3
 {
@@ -69,6 +70,14 @@ public class UserStatV3
     /// </summary>
     public bool IsSharingReviews { get; set; }
     /// <summary>
+    /// Is the user sharing their profile
+    /// </summary>
+    public bool IsSharingProfile { get; set; }
+    /// <summary>
+    /// Is the user sharing annotations
+    /// </summary>
+    public bool IsSharingAnnotations { get; set; }
+    /// <summary>
     /// The number of devices setup and their platforms
     /// </summary>
     public ICollection<DevicePlatform> DevicePlatforms { get; set; }
@@ -80,6 +89,26 @@ public class UserStatV3
     /// Who manages the user (OIDC, Kavita)
     /// </summary>
     public IdentityProvider IdentityProvider { get; set; }
+    /// <summary>
+    /// Total seconds read
+    /// </summary>
+    /// <remarks>Powers Top Reader badges</remarks>
+    public long TotalSecondsRead { get; set; }
+    /// <summary>
+    /// Total pages read
+    /// </summary>
+    /// <remarks>Powers Top Reader badges</remarks>
+    public long TotalPagesRead { get; set; }
+    /// <summary>
+    /// Total words read
+    /// </summary>
+    /// <remarks>Powers Top Reader badges</remarks>
+    public long TotalWordsRead { get; set; }
+
+    /// <summary>
+    /// An anonymous identifier for the social badges feature. This is the InstallId (which is malleable) and UserId from DB. 
+    /// </summary>
+    public string? UserId { get; set; }
 
 
 }
