@@ -28,6 +28,22 @@ public class UserStat
     public List<string> Roles { get; set; } 
     
     public IdentityProvider IdentityProvider { get; set; }
+    /// <summary>
+    /// Total seconds read
+    /// </summary>
+    /// <remarks>Powers Top Reader badges</remarks>
+    public long TotalSecondsRead { get; set; }
+    /// <summary>
+    /// Total pages read period
+    /// </summary>
+    /// <remarks>Powers Top Reader badges</remarks>
+    public long TotalPagesRead { get; set; }
+    /// <summary>
+    /// Total words read
+    /// </summary>
+    /// <remarks>Powers Top Reader badges</remarks>
+    public long TotalWordsRead { get; set; }
+    
     
     public int ServerStatId { get; set; }
     public virtual ServerStat ServerStat { get; set; }
