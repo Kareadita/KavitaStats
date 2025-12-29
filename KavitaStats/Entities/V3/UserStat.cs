@@ -23,6 +23,14 @@ public class UserStat
     public bool HasMALToken { get; set; }
     public int SmartFilterCreatedCount { get; set; }
     public bool IsSharingReviews { get; set; }
+    /// <summary>
+    /// Is the user sharing their profile
+    /// </summary>
+    public bool IsSharingProfile { get; set; }
+    /// <summary>
+    /// Is the user sharing annotations
+    /// </summary>
+    public bool IsSharingAnnotations { get; set; }
 
     public List<DevicePlatform> DevicePlatforms { get; set; } 
     public List<string> Roles { get; set; } 
@@ -43,6 +51,10 @@ public class UserStat
     /// </summary>
     /// <remarks>Powers Top Reader badges</remarks>
     public long TotalWordsRead { get; set; }
+    /// <summary>
+    /// An anonymous identifier for the social badges feature. This is the InstallId (which is malleable) and UserId from DB. 
+    /// </summary>
+    public string UserId { get; set; }
     
     
     public int ServerStatId { get; set; }

@@ -165,13 +165,15 @@ public class StatsV3Controller : BaseApiController
                 HasMALToken = userDto.HasMALToken,
                 SmartFilterCreatedCount = userDto.SmartFilterCreatedCount,
                 IsSharingReviews = userDto.IsSharingReviews,
+                IsSharingProfile = userDto.IsSharingProfile,
+                IsSharingAnnotations = userDto.IsSharingAnnotations,
                 DevicePlatforms = userDto.DevicePlatforms.ToList(),
                 Roles = userDto.Roles.ToList(),
                 IdentityProvider = userDto.IdentityProvider,
                 TotalSecondsRead = userDto.TotalSecondsRead,
                 TotalPagesRead = userDto.TotalPagesRead,
                 TotalWordsRead = userDto.TotalWordsRead,
-                
+                UserId = userDto.UserId,
             });
         }
         
