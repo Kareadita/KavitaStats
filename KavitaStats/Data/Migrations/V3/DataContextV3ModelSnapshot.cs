@@ -63,7 +63,7 @@ namespace KavitaStats.Data.Migrations.V3
 
                     b.HasIndex("ServerStatId");
 
-                    b.ToTable("LibraryStat");
+                    b.ToTable("LibraryStat", (string)null);
                 });
 
             modelBuilder.Entity("KavitaStats.Entities.V3.RelationshipStat", b =>
@@ -85,7 +85,7 @@ namespace KavitaStats.Data.Migrations.V3
 
                     b.HasIndex("ServerStatId");
 
-                    b.ToTable("RelationshipStat");
+                    b.ToTable("RelationshipStat", (string)null);
                 });
 
             modelBuilder.Entity("KavitaStats.Entities.V3.ServerStat", b =>
@@ -195,7 +195,7 @@ namespace KavitaStats.Data.Migrations.V3
                     b.HasIndex("InstallId")
                         .IsUnique();
 
-                    b.ToTable("ServerStat");
+                    b.ToTable("ServerStat", (string)null);
                 });
 
             modelBuilder.Entity("KavitaStats.Entities.V3.UserAgeRestriction", b =>
@@ -218,7 +218,7 @@ namespace KavitaStats.Data.Migrations.V3
                     b.HasIndex("UserStatId")
                         .IsUnique();
 
-                    b.ToTable("UserAgeRestriction");
+                    b.ToTable("UserAgeRestriction", (string)null);
                 });
 
             modelBuilder.Entity("KavitaStats.Entities.V3.UserStat", b =>
@@ -281,15 +281,6 @@ namespace KavitaStats.Data.Migrations.V3
                     b.Property<int>("SmartFilterCreatedCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("TotalPagesRead")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("TotalSecondsRead")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("TotalWordsRead")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("WantToReadSeriesCount")
                         .HasColumnType("INTEGER");
 
@@ -297,7 +288,7 @@ namespace KavitaStats.Data.Migrations.V3
 
                     b.HasIndex("ServerStatId");
 
-                    b.ToTable("UserStat");
+                    b.ToTable("UserStat", (string)null);
                 });
 
             modelBuilder.Entity("KavitaStats.Entities.V3.LibraryStat", b =>
