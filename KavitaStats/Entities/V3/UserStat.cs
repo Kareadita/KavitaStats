@@ -42,7 +42,7 @@ public class UserStat
     /// <remarks>Powers Top Reader badges</remarks>
     public long TotalSecondsRead { get; set; }
     /// <summary>
-    /// Total pages read period
+    /// Total pages read
     /// </summary>
     /// <remarks>Powers Top Reader badges</remarks>
     public long TotalPagesRead { get; set; }
@@ -54,7 +54,7 @@ public class UserStat
     /// <summary>
     /// An anonymous identifier for the social badges feature. This is the InstallId (which is malleable) and UserId from DB. 
     /// </summary>
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
     
     
     public int ServerStatId { get; set; }

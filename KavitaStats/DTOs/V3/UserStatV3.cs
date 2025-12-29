@@ -95,7 +95,7 @@ public class UserStatV3
     /// <remarks>Powers Top Reader badges</remarks>
     public long TotalSecondsRead { get; set; }
     /// <summary>
-    /// Total pages read period
+    /// Total pages read
     /// </summary>
     /// <remarks>Powers Top Reader badges</remarks>
     public long TotalPagesRead { get; set; }
