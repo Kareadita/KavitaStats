@@ -48,12 +48,7 @@ public class Startup
             {
                 policy.AllowAnyHeader()
                     .AllowAnyMethod()
-                    .WithOrigins(
-                        "https://github.com",
-                        "https://www.github.com",
-                        "https://kavitastats.com",
-                        "https://www.kavitastats.com"
-                    )
+                    .AllowAnyOrigin()
                     .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key");
             });
         });
