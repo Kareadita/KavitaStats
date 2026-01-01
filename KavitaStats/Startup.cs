@@ -106,16 +106,16 @@ public class Startup
         });
 
         app.UseRouting();
-            
-        if (env.IsDevelopment())
-        {
-            app.UseCors(policy => policy
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials() // For SignalR token query param (if using)
-                .WithOrigins("http://localhost:4200")
-                .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key"));
-        }
+        
+        app.UseCors(policy => policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .WithOrigins(
+                "https://github.com",
+                "https://kavitastats.com",
+                "https://www.kavitastats.com"
+            )
+            .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key"));
             
         app.UseResponseCaching();
 
