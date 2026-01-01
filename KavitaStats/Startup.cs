@@ -107,12 +107,14 @@ public class Startup
 
         app.UseRouting();
         
-        // Since everything in this API is readonly and public, no need for Cors
         app.UseCors(policy => policy
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials() // For SignalR token query param (if using)
-            .AllowAnyOrigin()
+            .WithOrigins(
+                "https://github.com",
+                "https://kavitastats.com",
+                "https://www.kavitastats.com"
+            )
             .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key"));
             
         app.UseResponseCaching();
