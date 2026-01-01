@@ -106,16 +106,14 @@ public class Startup
         });
 
         app.UseRouting();
-            
-        if (env.IsDevelopment())
-        {
-            app.UseCors(policy => policy
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials() // For SignalR token query param (if using)
-                .WithOrigins("http://localhost:4200")
-                .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key"));
-        }
+        
+        // Since everything in this API is readonly and public, no need for Cors
+        app.UseCors(policy => policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials() // For SignalR token query param (if using)
+            .AllowAnyOrigin()
+            .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key"));
             
         app.UseResponseCaching();
 
