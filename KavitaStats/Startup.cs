@@ -42,7 +42,21 @@ public class Startup
             options.ForwardedHeaders =
                 ForwardedHeaders.All;
         });
-        services.AddCors();
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithOrigins(
+                        "https://github.com",
+                        "https://www.github.com",
+                        "https://kavitastats.com",
+                        "https://www.kavitastats.com"
+                    )
+                    .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key");
+            });
+        });
         services.AddIdentityServices(_config);
         services.AddSwaggerGen(c =>
         {
@@ -107,15 +121,7 @@ public class Startup
 
         app.UseRouting();
         
-        app.UseCors(policy => policy
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .WithOrigins(
-                "https://github.com",
-                "https://kavitastats.com",
-                "https://www.kavitastats.com"
-            )
-            .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key"));
+        app.UseCors();
             
         app.UseResponseCaching();
 
