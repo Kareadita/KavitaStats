@@ -42,16 +42,7 @@ public class Startup
             options.ForwardedHeaders =
                 ForwardedHeaders.All;
         });
-        services.AddCors(options =>
-        {
-            options.AddDefaultPolicy(policy =>
-            {
-                policy.AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowAnyOrigin()
-                    .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key");
-            });
-        });
+        services.AddCors();
         services.AddIdentityServices(_config);
         services.AddSwaggerGen(c =>
         {
@@ -116,7 +107,15 @@ public class Startup
 
         app.UseRouting();
         
-        app.UseCors();
+        if (env.IsDevelopment())
+        {
+            app.UseCors(policy => policy
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials() // For SignalR token query param (if using)
+                .WithOrigins("http://localhost:4200")
+                .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key"));
+        }
             
         app.UseResponseCaching();
 
