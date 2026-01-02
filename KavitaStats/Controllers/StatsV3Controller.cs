@@ -80,9 +80,14 @@ public class StatsV3Controller : BaseApiController
         existingRecord.InitialInstallDate = dto.InitialInstallDate;
         existingRecord.NumOfCores = dto.NumOfCores;
         existingRecord.OsLocale = dto.OsLocale;
-        existingRecord.TimeToOpeCbzMs = dto.TimeToOpeCbzMs;
-        existingRecord.TimeToOpenCbzPages = dto.TimeToOpenCbzPages;
         existingRecord.TimeToPingKavitaStatsApi = dto.TimeToPingKavitaStatsApi;
+        
+        // After Kavita reports enough of these, we can stop recording
+        if (dto.TimeToOpeCbzMs != null && dto.TimeToOpenCbzPages != null)
+        {
+            existingRecord.TimeToOpeCbzMs = dto.TimeToOpeCbzMs.Value;
+            existingRecord.TimeToOpenCbzPages = dto.TimeToOpenCbzPages.Value;    
+        }
 
         // Update Media properties
         existingRecord.NumberOfCollections = dto.NumberOfCollections;
