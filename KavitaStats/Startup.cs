@@ -42,7 +42,12 @@ public class Startup
             options.ForwardedHeaders =
                 ForwardedHeaders.All;
         });
-        services.AddCors();
+        
+        if (_env.IsDevelopment())
+        {
+            services.AddCors();    
+        }
+        
         services.AddIdentityServices(_config);
         services.AddSwaggerGen(c =>
         {
