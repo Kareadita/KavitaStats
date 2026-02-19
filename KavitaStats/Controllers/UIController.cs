@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KavitaStats.Constants;
 using KavitaStats.Data;
 using KavitaStats.DTOs;
 using KavitaStats.DTOs.UI;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 
 namespace KavitaStats.Controllers;
@@ -25,11 +27,12 @@ public class UiController : BaseApiController
     }
 
     [HttpGet("total-users")]
+    [OutputCache(PolicyName = CacheConstants.TenMinutes)]
     public async Task<ActionResult<int>> GetTotalUserCount()
     {
         return Ok(await GetActiveInstalls());
-    }    
-    
+    }
+
     /// <summary>
     /// For a given theme, return the number of active users with theme active
     /// </summary>
@@ -37,11 +40,12 @@ public class UiController : BaseApiController
     /// <param name="theme"></param>
     /// <returns></returns>
     [HttpGet("theme-users")]
+    [OutputCache(PolicyName = CacheConstants.TenMinutes)]
     public async Task<ActionResult<ShieldBadgeDto>> GetUsersByTheme(string theme)
     {
         var count = await _dataContextV3.UserStat.Where(u => u.ActiveTheme == theme)
             .CountAsync();
-        
+
         return Ok(new ShieldBadgeDto()
         {
             Label = "Active",
@@ -50,6 +54,7 @@ public class UiController : BaseApiController
     }
 
     [HttpGet("volumes-in-a-series")]
+    [OutputCache(PolicyName = CacheConstants.TenMinutes)]
     public async Task<ActionResult<VolumesInASeriesDto>> GetVolumesInASeries()
     {
         // select min(MaxVolumesInASeries), max(MaxVolumesInASeries), avg(MaxVolumesInASeries) from StatRecord;
@@ -65,6 +70,7 @@ public class UiController : BaseApiController
     }
 
     [HttpGet("installs-by-release")]
+    [OutputCache(PolicyName = CacheConstants.TenMinutes)]
     public async Task<ActionResult<IEnumerable<ReleaseInstallCountDto>>> GetUsersByRelease(int cutoffDays = 0)
     {
         var distinctInstalls =  await _dataContext.StatRecord
@@ -85,12 +91,12 @@ public class UiController : BaseApiController
             // })
 
             var cuttoffDate = DateTime.Now - TimeSpan.FromDays(cutoffDays);
-            
+
 
             var count = await _dataContext.StatRecord.CountAsync(s =>
                 s.KavitaVersion == install || (cutoffDays > 0 && s.LastUpdated >= cuttoffDate));
             if (count == 0) continue;
-            
+
             releaseInstalls.Add(new ReleaseInstallCountDto()
             {
                 InstallCount = count,
@@ -101,12 +107,13 @@ public class UiController : BaseApiController
         // TODO: Need to order by Version number .OrderBy(r => new Version(r.ReleaseVersion))
         return releaseInstalls;
     }
-    
+
     /// <summary>
     /// Generates the shield.io status badge for Kavita's readme
     /// </summary>
     /// <returns></returns>
     [HttpGet("shield-badge")]
+    [OutputCache(PolicyName = CacheConstants.TenMinutes)]
     public async Task<ActionResult<ShieldBadgeDto>> GetServerBadge()
     {
         return Ok(new ShieldBadgeDto()
@@ -126,14 +133,14 @@ public class UiController : BaseApiController
             _ => number.ToString()
         };
     }
-    
+
     // I need install growth over time (this is by created date vs install version)
-    // Pie graph of Installs vs OS/Version/ 
-    
+    // Pie graph of Installs vs OS/Version/
+
     private async Task<int> GetActiveInstalls()
     {
         var cutoff = DateTime.Now.Subtract(TimeSpan.FromDays(10));
-    
+
         var v2InstallIds = await _dataContext.StatRecord
             .Where(s => s.LastModified >= cutoff)
             .Select(s => s.InstallId)
@@ -167,7 +174,7 @@ public class UiController : BaseApiController
         // Batch the overlap check to avoid massive IN clauses
         var overlapCount = 0;
         const int batchSize = 500;
-    
+
         foreach (var batch in v3InstallIds.Chunk(batchSize))
         {
             overlapCount += await _dataContext.StatRecord

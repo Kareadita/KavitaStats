@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using Hangfire;
+using KavitaStats.Constants;
 using KavitaStats.Extensions;
 using KavitaStats.Services;
 using Microsoft.AspNetCore.Builder;
@@ -27,12 +28,12 @@ public class Startup
     {
         _config = config;
         _env = env;
-        
+
         // Disable Hangfire Automatic Retry
         GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 0 });
     }
-        
-    
+
+
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddApplicationServices(_config, _env);
@@ -42,12 +43,12 @@ public class Startup
             options.ForwardedHeaders =
                 ForwardedHeaders.All;
         });
-        
+
         if (_env.IsDevelopment())
         {
-            services.AddCors();    
+            services.AddCors();
         }
-        
+
         services.AddIdentityServices(_config);
         services.AddSwaggerGen(c =>
         {
@@ -64,7 +65,7 @@ public class Startup
                 [new OpenApiSecuritySchemeReference("bearer", document)] = []
             });
         });
-            
+
         services.AddResponseCompression(options =>
         {
             options.Providers.Add<BrotliCompressionProvider>();
@@ -80,18 +81,21 @@ public class Startup
         });
 
         services.AddResponseCaching();
-        
+        services.AddOutputCache(options =>
+            options.AddPolicy(CacheConstants.TenMinutes, new InformativeOutputCachePolicy(TimeSpan.FromMinutes(10))
+            ));
+
         services.AddHangfire(configuration => configuration
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
             .UseInMemoryStorage());
         services.AddHangfireServer();
-        
+
         services.AddHostedService<StartupTasksHostedService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
         IHostApplicationLifetime applicationLifetime, IServiceProvider serviceProvider)
     {
         if (env.IsDevelopment())
@@ -99,10 +103,12 @@ public class Startup
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "KavitaStats v3"));
-            
+
             app.UseHangfireDashboard();
         }
-            
+
+        app.UseOutputCache();
+
         app.UseResponseCompression();
 
         app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -111,7 +117,7 @@ public class Startup
         });
 
         app.UseRouting();
-        
+
         if (env.IsDevelopment())
         {
             app.UseCors(policy => policy
@@ -121,32 +127,32 @@ public class Startup
                 .WithOrigins("http://localhost:4200")
                 .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key"));
         }
-            
+
         app.UseResponseCaching();
 
         app.UseAuthentication();
 
         app.UseAuthorization();
-            
+
         app.UseStaticFiles(new StaticFileOptions
         {
             ContentTypeProvider = new FileExtensionContentTypeProvider()
         });
-            
+
         app.UseSerilogRequestLogging();
 
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
         });
-            
+
         applicationLifetime.ApplicationStopping.Register(OnShutdown);
         applicationLifetime.ApplicationStarted.Register(() =>
         {
             Console.WriteLine($"KavitaStats - v{Assembly.GetExecutingAssembly().GetName().Version}");
         });
     }
-        
+
     private static void OnShutdown()
     {
         Console.WriteLine("Server is shutting down. Please allow a few seconds to stop any background jobs...");
