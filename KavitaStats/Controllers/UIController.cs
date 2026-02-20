@@ -10,20 +10,25 @@ using KavitaStats.DTOs.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace KavitaStats.Controllers;
 
 public class UiController : BaseApiController
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly DataContext _dataContext;
     private readonly DataContextV3 _dataContextV3;
+    private readonly IMemoryCache _cache;
+    
+    private const string ActiveInstallsCacheKey = "ui:active-installs";
+    private static readonly TimeSpan ActiveInstallsCacheDuration = TimeSpan.FromMinutes(10);
 
-    public UiController(IUnitOfWork unitOfWork, DataContext dataContext, DataContextV3 dataContextV3)
+
+    public UiController(DataContext dataContext, DataContextV3 dataContextV3, IMemoryCache cache)
     {
-        _unitOfWork = unitOfWork;
         _dataContext = dataContext;
         _dataContextV3 = dataContextV3;
+        _cache = cache;
     }
 
     [HttpGet("total-users")]
@@ -51,22 +56,6 @@ public class UiController : BaseApiController
             Label = "Active",
             Message = FormatNumberCompact(count)
         });
-    }
-
-    [HttpGet("volumes-in-a-series")]
-    [OutputCache(PolicyName = CacheConstants.TenMinutes)]
-    public async Task<ActionResult<VolumesInASeriesDto>> GetVolumesInASeries()
-    {
-        // select min(MaxVolumesInASeries), max(MaxVolumesInASeries), avg(MaxVolumesInASeries) from StatRecord;
-        var ret = new VolumesInASeriesDto()
-        {
-            Maximum = await _dataContext.StatRecord.Select(s => s.MaxVolumesInASeries).MaxAsync(),
-            Minimum = await _dataContext.StatRecord.Select(s => s.MaxVolumesInASeries).MinAsync(),
-            Average = await _dataContext.StatRecord.Select(s => s.MaxVolumesInASeries).AverageAsync(),
-        };
-
-        return ret;
-
     }
 
     [HttpGet("installs-by-release")]
@@ -139,6 +128,9 @@ public class UiController : BaseApiController
 
     private async Task<int> GetActiveInstalls()
     {
+        if (_cache.TryGetValue(ActiveInstallsCacheKey, out int cached))
+            return cached;
+
         var cutoff = DateTime.Now.Subtract(TimeSpan.FromDays(10));
 
         var v2InstallIds = await _dataContext.StatRecord
@@ -156,7 +148,11 @@ public class UiController : BaseApiController
             .ToListAsync()
             .ContinueWith(t => t.Result.Count(id => !v2Set.Contains(id)));
 
-        return v2InstallIds.Count + v3UniqueCount;
+        var result = v2InstallIds.Count + v3UniqueCount;
+
+        _cache.Set(ActiveInstallsCacheKey, result, ActiveInstallsCacheDuration);
+
+        return result;
     }
 
     private async Task<int> GetTotalInstalls()

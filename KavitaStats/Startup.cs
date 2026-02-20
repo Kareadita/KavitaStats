@@ -49,6 +49,7 @@ public class Startup
             services.AddCors();
         }
 
+        services.AddMemoryCache();
         services.AddIdentityServices(_config);
         services.AddSwaggerGen(c =>
         {
