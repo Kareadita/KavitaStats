@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,37 +6,35 @@ using KavitaStats.Constants;
 using KavitaStats.Data;
 using KavitaStats.DTOs;
 using KavitaStats.DTOs.UI;
+using KavitaStats.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace KavitaStats.Controllers;
 
 [EnableCors("Public")]
+[EnableRateLimiting("ui")]
 public class UiController : BaseApiController
 {
     private readonly DataContext _dataContext;
     private readonly DataContextV3 _dataContextV3;
-    private readonly IMemoryCache _cache;
-    
-    private const string ActiveInstallsCacheKey = "ui:active-installs";
-    private static readonly TimeSpan ActiveInstallsCacheDuration = TimeSpan.FromMinutes(10);
+    private readonly IUiStatsCacheService _cacheService;
 
-
-    public UiController(DataContext dataContext, DataContextV3 dataContextV3, IMemoryCache cache)
+    public UiController(DataContext dataContext, DataContextV3 dataContextV3, IUiStatsCacheService cacheService)
     {
         _dataContext = dataContext;
         _dataContextV3 = dataContextV3;
-        _cache = cache;
+        _cacheService = cacheService;
     }
 
     [HttpGet("total-users")]
     [OutputCache(PolicyName = CacheConstants.TenMinutes)]
     public async Task<ActionResult<int>> GetTotalUserCount()
     {
-        return Ok(await GetActiveInstalls());
+        return Ok(await _cacheService.GetActiveInstallsAsync());
     }
 
     /// <summary>
@@ -64,7 +61,7 @@ public class UiController : BaseApiController
     [OutputCache(PolicyName = CacheConstants.TenMinutes)]
     public async Task<ActionResult<IEnumerable<ReleaseInstallCountDto>>> GetUsersByRelease(int cutoffDays = 0)
     {
-        var distinctInstalls =  await _dataContext.StatRecord
+        var distinctInstalls = await _dataContext.StatRecord
             .Select(s => s.KavitaVersion)
             .Distinct()
             .OrderByDescending(r => r)
@@ -74,15 +71,7 @@ public class UiController : BaseApiController
         var releaseInstalls = new List<ReleaseInstallCountDto>();
         foreach (var install in distinctInstalls)
         {
-
-            // var t = await _dataContext.StatRecord.Select(sr => new
-            // {
-            //     InstallCount = _dataContext.StatRecord.CountAsync(s => s.KavitaVersion == install),
-            //     DockerCount = _dataContext.StatRecord.Where(s => s.IsDocker).CountAsync(s => s.KavitaVersion == install),
-            // })
-
             var cuttoffDate = DateTime.Now - TimeSpan.FromDays(cutoffDays);
-
 
             var count = await _dataContext.StatRecord.CountAsync(s =>
                 s.KavitaVersion == install || (cutoffDays > 0 && s.LastUpdated >= cuttoffDate));
@@ -109,7 +98,7 @@ public class UiController : BaseApiController
     {
         return Ok(new ShieldBadgeDto()
         {
-            Message = FormatNumberCompact(await GetTotalInstalls())
+            Message = FormatNumberCompact(await _cacheService.GetTotalInstallsAsync())
         });
     }
 
@@ -117,71 +106,9 @@ public class UiController : BaseApiController
     {
         return number switch
         {
-            // If greater than or equal to a million
             >= 1000000 => (number / 1000000.0).ToString("0.#") + "M",
-            // If greater than or equal to a thousand
             >= 1000 => (number / 1000.0).ToString("0.#") + "K",
             _ => number.ToString()
         };
-    }
-
-    // I need install growth over time (this is by created date vs install version)
-    // Pie graph of Installs vs OS/Version/
-
-    private async Task<int> GetActiveInstalls()
-    {
-        if (_cache.TryGetValue(ActiveInstallsCacheKey, out int cached))
-            return cached;
-
-        var cutoff = DateTime.Now.Subtract(TimeSpan.FromDays(10));
-
-        var v2InstallIds = await _dataContext.StatRecord
-            .Where(s => s.LastModified >= cutoff)
-            .Select(s => s.InstallId)
-            .Distinct()
-            .ToListAsync();
-
-        var v2Set = v2InstallIds.ToHashSet();
-
-        var v3UniqueCount = await _dataContextV3.ServerStat
-            .Where(s => s.LastModified >= cutoff)
-            .Select(s => s.InstallId)
-            .Distinct()
-            .ToListAsync()
-            .ContinueWith(t => t.Result.Count(id => !v2Set.Contains(id)));
-
-        var result = v2InstallIds.Count + v3UniqueCount;
-
-        _cache.Set(ActiveInstallsCacheKey, result, ActiveInstallsCacheDuration);
-
-        return result;
-    }
-
-    private async Task<int> GetTotalInstalls()
-    {
-        var v2Count = await _dataContext.StatRecord
-            .Select(s => s.InstallId)
-            .Distinct()
-            .CountAsync();
-
-        var v3InstallIds = await _dataContextV3.ServerStat
-            .Select(s => s.InstallId)
-            .Distinct()
-            .ToListAsync();
-
-        // Batch the overlap check to avoid massive IN clauses
-        var overlapCount = 0;
-        const int batchSize = 500;
-
-        foreach (var batch in v3InstallIds.Chunk(batchSize))
-        {
-            overlapCount += await _dataContext.StatRecord
-                .Where(s => batch.Contains(s.InstallId))
-                .Select(s => s.InstallId)
-                .Distinct()
-                .CountAsync();
-        }
-
-        return v2Count + v3InstallIds.Count - overlapCount;
     }
 }

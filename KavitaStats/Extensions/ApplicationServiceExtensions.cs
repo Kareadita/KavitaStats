@@ -22,6 +22,7 @@ public static class ApplicationServiceExtensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITaskScheduler, TaskScheduler>();
             services.AddScoped<HistoricalSnapshotService>();
+            services.AddScoped<IUiStatsCacheService, UiStatsCacheService>();
 
             services.AddLogging(config);
             services.AddSqLite(config, env);

@@ -2,13 +2,16 @@ using System;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Threading.RateLimiting;
 using Hangfire;
 using KavitaStats.Constants;
 using KavitaStats.Extensions;
 using KavitaStats.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
@@ -48,10 +51,27 @@ public class Startup
         {
             opt.AddPolicy("Public", policy =>
             {
-                policy.AllowAnyOrigin()
+                policy.WithOrigins(
+                        "https://kavitareader.com",
+                        "https://www.kavitareader.com")
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             });
+        });
+
+        services.AddRateLimiter(options =>
+        {
+            options.AddPolicy("ui", context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 60,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    }));
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
         });
 
         services.AddMemoryCache();
@@ -113,8 +133,6 @@ public class Startup
             app.UseHangfireDashboard();
         }
 
-        app.UseOutputCache();
-
         app.UseResponseCompression();
 
         app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -125,6 +143,10 @@ public class Startup
         app.UseRouting();
 
         app.UseCors("Public");
+
+        app.UseRateLimiter();
+
+        app.UseOutputCache();
 
         app.UseResponseCaching();
 
