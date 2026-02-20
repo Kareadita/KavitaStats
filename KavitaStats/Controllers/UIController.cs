@@ -7,6 +7,7 @@ using KavitaStats.Constants;
 using KavitaStats.Data;
 using KavitaStats.DTOs;
 using KavitaStats.DTOs.UI;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace KavitaStats.Controllers;
 
+[EnableCors("Public")]
 public class UiController : BaseApiController
 {
     private readonly DataContext _dataContext;
