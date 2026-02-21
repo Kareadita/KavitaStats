@@ -14,16 +14,14 @@ namespace KavitaStats.Services;
 /// <param name="serviceProvider"></param>
 public class StartupTasksHostedService(IServiceProvider serviceProvider, ILogger<StartupTasksHostedService> logger) : IHostedService
 {
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
 
         var taskScheduler = scope.ServiceProvider.GetRequiredService<ITaskScheduler>();
         taskScheduler.ScheduleTasks();
 
-        _ = WarmCacheAsync(cancellationToken);
-
-        return Task.CompletedTask;
+        await WarmCacheAsync(cancellationToken);
     }
 
     private async Task WarmCacheAsync(CancellationToken cancellationToken)

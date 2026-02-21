@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using KavitaStats.Data;
 using Microsoft.EntityFrameworkCore;
@@ -21,33 +22,49 @@ public class UiStatsCacheService(DataContext dataContext, DataContextV3 dataCont
     private static readonly TimeSpan ActiveInstallsCacheDuration = TimeSpan.FromMinutes(10);
     private static readonly TimeSpan TotalInstallsCacheDuration = TimeSpan.FromHours(1);
 
+    // Static so the lock is shared across all scoped instances — prevents stampede
+    private static readonly SemaphoreSlim ActiveInstallsLock = new(1, 1);
+    private static readonly SemaphoreSlim TotalInstallsLock = new(1, 1);
+
     public async Task<int> GetActiveInstallsAsync()
     {
         if (cache.TryGetValue(ActiveInstallsCacheKey, out int cached))
             return cached;
 
-        var cutoff = DateTime.Now.Subtract(TimeSpan.FromDays(10));
+        await ActiveInstallsLock.WaitAsync();
+        try
+        {
+            // Re-check after acquiring the lock, another thread may have populated it
+            if (cache.TryGetValue(ActiveInstallsCacheKey, out cached))
+                return cached;
 
-        var v2InstallIds = await dataContext.StatRecord
-            .Where(s => s.LastModified >= cutoff)
-            .Select(s => s.InstallId)
-            .Distinct()
-            .ToListAsync();
+            var cutoff = DateTime.UtcNow.Subtract(TimeSpan.FromDays(10));
 
-        var v2Set = v2InstallIds.ToHashSet();
+            var v2InstallIds = await dataContext.StatRecord
+                .Where(s => s.LastModified >= cutoff)
+                .Select(s => s.InstallId)
+                .Distinct()
+                .ToListAsync();
 
-        var v3UniqueCount = await dataContextV3.ServerStat
-            .Where(s => s.LastModified >= cutoff)
-            .Select(s => s.InstallId)
-            .Distinct()
-            .ToListAsync()
-            .ContinueWith(t => t.Result.Count(id => !v2Set.Contains(id)));
+            var v2Set = v2InstallIds.ToHashSet();
 
-        var result = v2InstallIds.Count + v3UniqueCount;
+            var v3UniqueCount = await dataContextV3.ServerStat
+                .Where(s => s.LastModified >= cutoff)
+                .Select(s => s.InstallId)
+                .Distinct()
+                .ToListAsync()
+                .ContinueWith(t => t.Result.Count(id => !v2Set.Contains(id)));
 
-        cache.Set(ActiveInstallsCacheKey, result, ActiveInstallsCacheDuration);
+            var result = v2InstallIds.Count + v3UniqueCount;
 
-        return result;
+            cache.Set(ActiveInstallsCacheKey, result, ActiveInstallsCacheDuration);
+
+            return result;
+        }
+        finally
+        {
+            ActiveInstallsLock.Release();
+        }
     }
 
     public async Task<int> GetTotalInstallsAsync()
@@ -55,32 +72,44 @@ public class UiStatsCacheService(DataContext dataContext, DataContextV3 dataCont
         if (cache.TryGetValue(TotalInstallsCacheKey, out int cached))
             return cached;
 
-        var v2Count = await dataContext.StatRecord
-            .Select(s => s.InstallId)
-            .Distinct()
-            .CountAsync();
-
-        var v3InstallIds = await dataContextV3.ServerStat
-            .Select(s => s.InstallId)
-            .Distinct()
-            .ToListAsync();
-
-        var overlapCount = 0;
-        const int batchSize = 500;
-
-        foreach (var batch in v3InstallIds.Chunk(batchSize))
+        await TotalInstallsLock.WaitAsync();
+        try
         {
-            overlapCount += await dataContext.StatRecord
-                .Where(s => batch.Contains(s.InstallId))
+            // Re-check after acquiring the lock, another thread may have populated it
+            if (cache.TryGetValue(TotalInstallsCacheKey, out cached))
+                return cached;
+
+            var v2Count = await dataContext.StatRecord
                 .Select(s => s.InstallId)
                 .Distinct()
                 .CountAsync();
+
+            var v3InstallIds = await dataContextV3.ServerStat
+                .Select(s => s.InstallId)
+                .Distinct()
+                .ToListAsync();
+
+            var overlapCount = 0;
+            const int batchSize = 500;
+
+            foreach (var batch in v3InstallIds.Chunk(batchSize))
+            {
+                overlapCount += await dataContext.StatRecord
+                    .Where(s => batch.Contains(s.InstallId))
+                    .Select(s => s.InstallId)
+                    .Distinct()
+                    .CountAsync();
+            }
+
+            var result = v2Count + v3InstallIds.Count - overlapCount;
+
+            cache.Set(TotalInstallsCacheKey, result, TotalInstallsCacheDuration);
+
+            return result;
         }
-
-        var result = v2Count + v3InstallIds.Count - overlapCount;
-
-        cache.Set(TotalInstallsCacheKey, result, TotalInstallsCacheDuration);
-
-        return result;
+        finally
+        {
+            TotalInstallsLock.Release();
+        }
     }
 }
