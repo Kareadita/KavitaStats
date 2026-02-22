@@ -2,13 +2,16 @@ using System;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Threading.RateLimiting;
 using Hangfire;
 using KavitaStats.Constants;
 using KavitaStats.Extensions;
 using KavitaStats.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
@@ -44,11 +47,34 @@ public class Startup
                 ForwardedHeaders.All;
         });
 
-        if (_env.IsDevelopment())
+        services.AddCors(opt =>
         {
-            services.AddCors();
-        }
+            opt.AddPolicy("Public", policy =>
+            {
+                policy.WithOrigins(
+                        "https://kavitareader.com",
+                        "https://www.kavitareader.com")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
 
+        services.AddRateLimiter(options =>
+        {
+            options.AddPolicy("ui", context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 60,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    }));
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+        });
+
+        services.AddMemoryCache();
         services.AddIdentityServices(_config);
         services.AddSwaggerGen(c =>
         {
@@ -107,8 +133,6 @@ public class Startup
             app.UseHangfireDashboard();
         }
 
-        app.UseOutputCache();
-
         app.UseResponseCompression();
 
         app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -118,15 +142,11 @@ public class Startup
 
         app.UseRouting();
 
-        if (env.IsDevelopment())
-        {
-            app.UseCors(policy => policy
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials() // For SignalR token query param (if using)
-                .WithOrigins("http://localhost:4200")
-                .WithExposedHeaders("Content-Disposition", "Pagination", "x-api-key", "api-key"));
-        }
+        app.UseCors("Public");
+
+        app.UseRateLimiter();
+
+        app.UseOutputCache();
 
         app.UseResponseCaching();
 

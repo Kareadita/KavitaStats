@@ -48,4 +48,13 @@
         <PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
     </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="UI\Web\kavita-stats\angular.json" />
+      <_ContentIncludedByDefault Remove="UI\Web\kavita-stats\package-lock.json" />
+      <_ContentIncludedByDefault Remove="UI\Web\kavita-stats\package.json" />
+      <_ContentIncludedByDefault Remove="UI\Web\kavita-stats\tsconfig.app.json" />
+      <_ContentIncludedByDefault Remove="UI\Web\kavita-stats\tsconfig.json" />
+      <_ContentIncludedByDefault Remove="UI\Web\kavita-stats\tsconfig.spec.json" />
+    </ItemGroup>
 </Project>
