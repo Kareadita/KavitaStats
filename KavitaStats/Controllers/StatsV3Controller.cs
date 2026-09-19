@@ -107,7 +107,7 @@ public class StatsV3Controller : BaseApiController
         existingRecord.LastReadTime = dto.LastReadTime;
         existingRecord.ActiveKavitaPlusSubscription = dto.ActiveKavitaPlusSubscription;
         existingRecord.UsingRestrictedProfiles = dto.UsingRestrictedProfiles;
-        existingRecord.MatchedMetadataEnabled = dto.UsingRestrictedProfiles;
+        existingRecord.MatchedMetadataEnabled = dto.MatchedMetadataEnabled;
         existingRecord.OidcEnabled = dto.OidcEnabled;
         
         // Update Libraries
