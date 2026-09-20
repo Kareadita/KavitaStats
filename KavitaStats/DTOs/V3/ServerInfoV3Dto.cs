@@ -138,6 +138,11 @@ public class ServerInfoV3Dto
     /// </summary>
     /// <remarks>Introduced in v0.6.0</remarks>
     public bool UsingRestrictedProfiles { get; set; }
+    /// <summary>
+    /// If using the downloading metadata feature
+    /// </summary>
+    /// <remarks>Kavita+ Only</remarks>
+    public bool MatchedMetadataEnabled { get; set; }
 
     public IList<UserStatV3> Users { get; set; }
 

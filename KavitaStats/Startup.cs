@@ -6,6 +6,8 @@ using System.Threading.RateLimiting;
 using Hangfire;
 using KavitaStats.Constants;
 using KavitaStats.Extensions;
+using KavitaStats.Mcp;
+using KavitaStats.Middleware;
 using KavitaStats.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -71,6 +73,17 @@ public class Startup
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                         QueueLimit = 0
                     }));
+            
+            options.AddPolicy("mcp", context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 30,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    }));
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
         });
 
@@ -118,6 +131,14 @@ public class Startup
         services.AddHangfireServer();
 
         services.AddHostedService<StartupTasksHostedService>();
+
+        services.AddScoped<ReadOnlySqlRunner>();
+        services.AddMcpServer(options =>
+            {
+                options.ServerInstructions = "Anonymous usage stats reported by Kavita installs. Call get_schema before writing queries with run_query.";
+            })
+            .WithHttpTransport()
+            .WithTools<StatsMcpTools>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -139,6 +160,8 @@ public class Startup
         {
             ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
         });
+
+        app.UseMiddleware<McpPasscodeMiddleware>();
 
         app.UseRouting();
 
@@ -164,6 +187,7 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapMcp(McpPasscodeMiddleware.McpPath).RequireRateLimiting("mcp");
         });
 
         applicationLifetime.ApplicationStopping.Register(OnShutdown);
