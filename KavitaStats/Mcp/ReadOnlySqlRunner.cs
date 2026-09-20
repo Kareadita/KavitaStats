@@ -72,7 +72,7 @@ public class ReadOnlySqlRunner(IConfiguration config)
 
         while (await reader.ReadAsync(cancellationToken))
         {
-            // MaxValueLength caps a single value, this caps 500 rows of merely large ones
+            // MaxValueLength caps a single value, this caps the total of many merely large ones
             if (rows.Count == MaxRows || bytes > MaxResultBytes)
             {
                 truncated = true;
@@ -80,12 +80,38 @@ public class ReadOnlySqlRunner(IConfiguration config)
             }
 
             var row = new object[reader.FieldCount];
+            var rowTruncated = false;
             for (var i = 0; i < reader.FieldCount; i++)
             {
                 var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
-                row[i] = value is byte[] ? "<blob>" : value;
-                if (row[i] is string text) bytes += text.Length * 2L;
+                switch (value)
+                {
+                    case byte[] blob:
+                        row[i] = "<blob>";
+                        bytes += blob.Length;
+                        break;
+                    case string text:
+                        row[i] = text;
+                        bytes += text.Length * 2L;
+                        break;
+                    default:
+                        row[i] = value;
+                        break;
+                }
+
+                // The row is abandoned mid-fill, the outer check only runs between rows
+                if (bytes <= MaxResultBytes) continue;
+
+                rowTruncated = true;
+                break;
             }
+
+            if (rowTruncated)
+            {
+                truncated = true;
+                break;
+            }
+
             rows.Add(row);
         }
 

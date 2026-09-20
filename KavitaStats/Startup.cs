@@ -73,6 +73,17 @@ public class Startup
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                         QueueLimit = 0
                     }));
+            
+            options.AddPolicy("mcp", context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 30,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    }));
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
         });
 
@@ -176,7 +187,7 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            endpoints.MapMcp(McpPasscodeMiddleware.McpPath);
+            endpoints.MapMcp(McpPasscodeMiddleware.McpPath).RequireRateLimiting("mcp");
         });
 
         applicationLifetime.ApplicationStopping.Register(OnShutdown);

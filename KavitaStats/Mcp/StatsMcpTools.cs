@@ -71,7 +71,7 @@ public class StatsMcpTools(ReadOnlySqlRunner sqlRunner, DataContextV3 dataContex
     }
 
     [McpServerTool(Name = "get_overview", ReadOnly = true)]
-    [Description("Headline numbers: active installs (reported in the last 10 days), all-time installs across v2 and v3, v3 install and user counts, and the last 12 weekly snapshots.")]
+    [Description("Headline numbers: active installs (reported in the last 10 days), all-time installs across v2 and v3, v3 install and user counts, and the last 12 weekly snapshots. ActiveInstalls and TotalInstalls are the figures published on kavitareader.com and count opted-out installs; V3ReportingInstalls, V3OptedOutInstalls and V3Users exclude them. Do not compare the two groups directly.")]
     public async Task<StatsOverview> GetOverview(CancellationToken cancellationToken)
     {
         var snapshots = await dataContextV3.HistoricalSnapshot
