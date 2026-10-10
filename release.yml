@@ -1,0 +1,33 @@
+
+CsprojPath: "KavitaStats/KavitaStats.csproj"
+
+ParseReleaseTypes:
+  # Always stable
+  BranchRequirements:
+    Stable:
+      StartWiths: ""
+      DoesNotContain: []
+
+
+VersionBump:
+  ComponentToBump: Build
+
+BuildServer:
+  AppName: "KavitaStats"
+  CsprojPath: "KavitaStats/KavitaStats.csproj"
+  SlnPath: "KavitaStats.sln"
+  OutputPath: "_output"
+  Rids:
+    Stable: ["linux-x64", "linux-arm", "linux-arm64"]
+  CopyFiles:
+    - { From: "LICENSE", To: "LICENSE.txt"}
+  DeletePaths: ["BuildHost-net472", "BuildHost-netcore", "bin"]
+
+Docker:
+  Push: true
+  Platforms: ["linux/amd64", "linux/arm/v7", "linux/arm64"]
+  Images:
+    - "jvmilazz0/kavitastats"
+  Tags:
+    Stable: ["latest", "{Version}"]
+
