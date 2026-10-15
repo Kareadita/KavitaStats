@@ -35,6 +35,9 @@ public class StatsMcpTools(ReadOnlySqlRunner sqlRunner, DataContextV3 dataContex
         Conventions:
         - LastModified on ServerStat is the last time the install reported. The kavitareader.com site counts an install as "active" when LastModified is within the last 10 days.
         - Exclude ServerStat rows with OptedOut = 1 unless the question is about opt-outs.
+        - Opt-outs are only recorded from October 2026. Installs that opted out before then look like any silent install until the yearly cleanup removes them.
+        - ServerStat.InitialInstallDate is NULL when the install reported a date before Kavita's first release (2021-01-20).
+        - HistoricalSnapshot.UniqueInstalls counts every ServerStat row that has not opted out, including installs silent for up to a year (the cleanup deletes them after that). It is not the active count.
         - Dates are TEXT, e.g. '2026-01-31 14:05:00'. Created and LastModified are UTC. Compare with datetime('now', '-30 days').
         - Enum columns are stored as integers, see Enums for the mapping.
         - UserStat.Roles, UserStat.DevicePlatforms and LibraryStat.FileTypes are JSON arrays. Query them with json_each, e.g. SELECT COUNT(*) FROM UserStat, json_each(UserStat.DevicePlatforms) WHERE json_each.value = 2
@@ -71,7 +74,7 @@ public class StatsMcpTools(ReadOnlySqlRunner sqlRunner, DataContextV3 dataContex
     }
 
     [McpServerTool(Name = "get_overview", ReadOnly = true)]
-    [Description("Headline numbers: active installs (reported in the last 10 days), all-time installs across v2 and v3, v3 install and user counts, and the last 12 weekly snapshots. ActiveInstalls and TotalInstalls are the figures published on kavitareader.com and count opted-out installs; V3ReportingInstalls, V3OptedOutInstalls and V3Users exclude them. Do not compare the two groups directly.")]
+    [Description("Headline numbers: active installs (reported in the last 10 days, the figure on kavitareader.com and the README badge), installs seen in the last year across v2 and v3, v3 install and user counts, and the last 12 weekly snapshots. ActiveInstalls and TotalInstalls count opted-out installs; V3ReportingInstalls, V3OptedOutInstalls and V3Users exclude them. Do not compare the two groups directly.")]
     public async Task<StatsOverview> GetOverview(CancellationToken cancellationToken)
     {
         var snapshots = await dataContextV3.HistoricalSnapshot

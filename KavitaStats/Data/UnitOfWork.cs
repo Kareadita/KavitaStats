@@ -12,6 +12,7 @@ public interface IUnitOfWork
     IPageSplitRepository PageSplitRepository { get; }
     IMangaReaderLayoutModeRepository MangaReaderLayoutModeRepository { get; }
     IFileFormatRepository FileFormatRepository { get; }
+    IStatRecordRepository StatRecordRepository { get; }
     bool Commit();
     Task<bool> CommitAsync();
     bool HasChanges();
@@ -36,6 +37,7 @@ public class UnitOfWork : IUnitOfWork
     public IPageSplitRepository PageSplitRepository => new PageSplitRepository(_context, _mapper);
     public IMangaReaderLayoutModeRepository MangaReaderLayoutModeRepository => new MangaReaderLayoutModeRepository(_context, _mapper);
     public IFileFormatRepository FileFormatRepository => new FileFormatRepository(_context, _mapper);
+    public IStatRecordRepository StatRecordRepository => new StatRecordRepository(_context);
 
     /// <summary>
     /// Commits changes to the DB. Completes the open transaction.

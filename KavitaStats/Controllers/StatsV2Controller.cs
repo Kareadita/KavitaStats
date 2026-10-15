@@ -20,35 +20,28 @@ public class StatsV2Controller : BaseApiController
     private readonly ILogger<StatsV2Controller> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly DataContext _context;
+    private readonly DataContextV3 _v3Context;
 
-    public StatsV2Controller(ILogger<StatsV2Controller> logger, IUnitOfWork unitOfWork, DataContext context)
+    public StatsV2Controller(ILogger<StatsV2Controller> logger, IUnitOfWork unitOfWork, DataContext context,
+        DataContextV3 v3Context)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _context = context;
-    }
-
-    /// <summary>
-    /// Validates an install ID as valid or not.
-    /// </summary>
-    /// <remarks>This is used by KavitaEmail service to validate valid installs are using it</remarks>
-    /// <param name="installId"></param>
-    /// <returns></returns>
-    [HttpGet("validate")]
-    public async Task<ActionResult<bool>> ValidateInstallId(string installId)
-    {
-        return Ok(await _context.StatRecord.AnyAsync(r => r.InstallId.Equals(installId)));
+        _v3Context = v3Context;
     }
 
     [HttpPost("opt-out")]
-    public async Task<ActionResult> UpdateAsCancelled([FromQuery] string installId)
+    public async Task<ActionResult> OptOut([FromQuery] string installId)
     {
         _logger.LogInformation("Stat collection has been requested to be stopped on {InstallId}", installId);
-        var existingRecord =
-            await _context.StatRecord.Where(r => r.InstallId == installId).FirstOrDefaultAsync();
-        if (existingRecord == null) return Ok();
 
-        existingRecord.OptedOut = true;
+        await _context.StatRecord
+            .Where(r => r.InstallId == installId)
+            .ExecuteUpdateAsync(s => s.SetProperty(r => r.OptedOut, true));
+        await _v3Context.ServerStat
+            .Where(s => s.InstallId == installId)
+            .ExecuteUpdateAsync(s => s.SetProperty(r => r.OptedOut, true));
 
         return Ok();
     }

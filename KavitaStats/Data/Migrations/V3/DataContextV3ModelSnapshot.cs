@@ -15,7 +15,7 @@ namespace KavitaStats.Data.Migrations.V3
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.11");
 
             modelBuilder.Entity("KavitaStats.Entities.HistoricalSnapshot", b =>
                 {
@@ -135,7 +135,7 @@ namespace KavitaStats.Data.Migrations.V3
                     b.Property<int>("EncodeMediaAs")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("InitialInstallDate")
+                    b.Property<DateTime?>("InitialInstallDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("InitialKavitaVersion")

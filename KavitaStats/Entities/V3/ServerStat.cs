@@ -20,7 +20,10 @@ public class ServerStat : IHasDate
     public string DotnetVersion { get; set; }
     public string KavitaVersion { get; set; }
     public string InitialKavitaVersion { get; set; }
-    public DateTime InitialInstallDate { get; set; }
+    /// <summary>
+    /// Null when the install reported a date before Kavita's first release
+    /// </summary>
+    public DateTime? InitialInstallDate { get; set; }
     public int NumOfCores { get; set; }
     public string OsLocale { get; set; }
     public long TimeToOpeCbzMs { get; set; }

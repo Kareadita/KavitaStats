@@ -1,5 +1,6 @@
 ﻿using KavitaStats.Data;
 using KavitaStats.Data.Helpers;
+using KavitaStats.Data.Repository;
 using KavitaStats.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ public static class ApplicationServiceExtensions
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IServerStatRepository, ServerStatRepository>();
             services.AddScoped<ITaskScheduler, TaskScheduler>();
             services.AddScoped<HistoricalSnapshotService>();
             services.AddScoped<IUiStatsCacheService, UiStatsCacheService>();

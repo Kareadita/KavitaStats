@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KavitaStats.Constants;
 using KavitaStats.Data;
 using KavitaStats.DTOs;
-using KavitaStats.DTOs.UI;
 using KavitaStats.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +16,11 @@ namespace KavitaStats.Controllers;
 [EnableRateLimiting("ui")]
 public class UiController : BaseApiController
 {
-    private readonly DataContext _dataContext;
     private readonly DataContextV3 _dataContextV3;
     private readonly IUiStatsCacheService _cacheService;
 
-    public UiController(DataContext dataContext, DataContextV3 dataContextV3, IUiStatsCacheService cacheService)
+    public UiController(DataContextV3 dataContextV3, IUiStatsCacheService cacheService)
     {
-        _dataContext = dataContext;
         _dataContextV3 = dataContextV3;
         _cacheService = cacheService;
     }
@@ -57,37 +52,6 @@ public class UiController : BaseApiController
         });
     }
 
-    [HttpGet("installs-by-release")]
-    [OutputCache(PolicyName = CacheConstants.TenMinutes)]
-    public async Task<ActionResult<IEnumerable<ReleaseInstallCountDto>>> GetUsersByRelease(int cutoffDays = 0)
-    {
-        var distinctInstalls = await _dataContext.StatRecord
-            .Select(s => s.KavitaVersion)
-            .Distinct()
-            .OrderByDescending(r => r)
-            .AsNoTracking()
-            .ToListAsync();
-
-        var releaseInstalls = new List<ReleaseInstallCountDto>();
-        foreach (var install in distinctInstalls)
-        {
-            var cuttoffDate = DateTime.Now - TimeSpan.FromDays(cutoffDays);
-
-            var count = await _dataContext.StatRecord.CountAsync(s =>
-                s.KavitaVersion == install || (cutoffDays > 0 && s.LastUpdated >= cuttoffDate));
-            if (count == 0) continue;
-
-            releaseInstalls.Add(new ReleaseInstallCountDto()
-            {
-                InstallCount = count,
-                ReleaseVersion = install
-            });
-        }
-
-        // TODO: Need to order by Version number .OrderBy(r => new Version(r.ReleaseVersion))
-        return releaseInstalls;
-    }
-
     /// <summary>
     /// Generates the shield.io status badge for Kavita's readme
     /// </summary>
@@ -98,7 +62,7 @@ public class UiController : BaseApiController
     {
         return Ok(new ShieldBadgeDto()
         {
-            Message = FormatNumberCompact(await _cacheService.GetTotalInstallsAsync())
+            Message = FormatNumberCompact(await _cacheService.GetActiveInstallsAsync())
         });
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KavitaStats.Attributes;
@@ -21,33 +22,32 @@ public class StatsV3Controller : BaseApiController
 {
     private readonly ILogger<StatsV3Controller> _logger;
     private readonly DataContextV3 _context;
+    private readonly DataContext _v2Context;
+    // Kavita's v0.1 GitHub release
+    private static readonly DateTime KavitaFirstReleaseDate = new(2021, 1, 20);
 
-    public StatsV3Controller(ILogger<StatsV3Controller> logger, DataContextV3 context)
+    public StatsV3Controller(ILogger<StatsV3Controller> logger, DataContextV3 context, DataContext v2Context)
     {
         _logger = logger;
         _context = context;
+        _v2Context = v2Context;
     }
 
-    /// <summary>
-    /// When a user opts out of stat collection we record and freeze their record
-    /// </summary>
-    /// <param name="installId"></param>
-    /// <returns></returns>
     [HttpPost("opt-out")]
-    public async Task<ActionResult> UpdateAsCancelled([FromQuery] string installId)
+    public async Task<ActionResult> OptOut([FromQuery] string installId)
     {
-        var existingRecord = await _context.ServerStat
-            .FirstOrDefaultAsync(s => s.InstallId == installId);
-        if (existingRecord == null) return Ok();
-        
-        existingRecord.OptedOut = true;
-        
-        _context.Update(existingRecord);
-        await _context.SaveChangesAsync();
-    
+        _logger.LogInformation("Stat collection has been requested to be stopped on {InstallId}", installId);
+
+        await _context.ServerStat
+            .Where(s => s.InstallId == installId)
+            .ExecuteUpdateAsync(s => s.SetProperty(r => r.OptedOut, true));
+        await _v2Context.StatRecord
+            .Where(r => r.InstallId == installId)
+            .ExecuteUpdateAsync(s => s.SetProperty(r => r.OptedOut, true));
+
         return Ok();
     }
-    
+
     [HttpPost]
     public async Task<ActionResult> AddOrUpdateInstance([FromBody] ServerInfoV3Dto dto)
     {
@@ -70,14 +70,15 @@ public class StatsV3Controller : BaseApiController
             };
             _context.ServerStat.Add(existingRecord);
         }
-        
+
         existingRecord.OptedOut = false;
         existingRecord.Os = dto.Os;
         existingRecord.IsDocker = dto.IsDocker;
         existingRecord.DotnetVersion = dto.DotnetVersion;
         existingRecord.KavitaVersion = dto.KavitaVersion;
         existingRecord.InitialKavitaVersion = dto.InitialKavitaVersion;
-        existingRecord.InitialInstallDate = dto.InitialInstallDate;
+        existingRecord.InitialInstallDate =
+            dto.InitialInstallDate < KavitaFirstReleaseDate ? null : dto.InitialInstallDate;
         existingRecord.NumOfCores = dto.NumOfCores;
         existingRecord.OsLocale = dto.OsLocale;
         existingRecord.TimeToPingKavitaStatsApi = dto.TimeToPingKavitaStatsApi;
