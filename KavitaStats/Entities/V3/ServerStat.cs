@@ -48,12 +48,17 @@ public class ServerStat : IHasDate
     public bool UsingRestrictedProfiles { get; set; }
     public bool MatchedMetadataEnabled { get; set; }
     public bool OidcEnabled { get; set; }
-    
+    /// <summary>
+    /// Sum of <see cref="MediaErrors"/> counts, null when the Kavita version does not send media errors
+    /// </summary>
+    public int? TotalMediaErrors { get; set; }
+
     public DateTime Created { get; set; }
     public DateTime LastModified { get; set; }
 
     public ICollection<LibraryStat> Libraries { get; set; }
     public ICollection<RelationshipStat> Relationships { get; set; }
     public ICollection<UserStat> Users { get; set; }
+    public ICollection<MediaErrorStat> MediaErrors { get; set; }
     
 }

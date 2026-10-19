@@ -176,16 +176,37 @@ namespace KavitaStats.Data.Migrations.V3
                     b.Property<string>("FileTypes")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("FolderWatchMode")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("IncludeInDashboard")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IncludeInSearch")
                         .HasColumnType("INTEGER");
 
+                    b.Property<long?>("LastScanDurationMs")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("LastScanFolderCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long?>("LastScanListMs")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long?>("LastScanParseMs")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long?>("LastScanWalkMs")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("LastScanned")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("LibraryType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("MultiFileEpubChapterCount")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("NumberOfFolders")
@@ -205,6 +226,31 @@ namespace KavitaStats.Data.Migrations.V3
                     b.HasIndex("ServerStatId");
 
                     b.ToTable("LibraryStat");
+                });
+
+            modelBuilder.Entity("KavitaStats.Entities.V3.MediaErrorStat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DismissedCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Reason")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ServerStatId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServerStatId");
+
+                    b.ToTable("MediaErrorStat");
                 });
 
             modelBuilder.Entity("KavitaStats.Entities.V3.RelationshipStat", b =>
@@ -320,6 +366,9 @@ namespace KavitaStats.Data.Migrations.V3
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TotalLibraries")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("TotalMediaErrors")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TotalPeople")
@@ -481,6 +530,17 @@ namespace KavitaStats.Data.Migrations.V3
                     b.Navigation("ServerStat");
                 });
 
+            modelBuilder.Entity("KavitaStats.Entities.V3.MediaErrorStat", b =>
+                {
+                    b.HasOne("KavitaStats.Entities.V3.ServerStat", "ServerStat")
+                        .WithMany("MediaErrors")
+                        .HasForeignKey("ServerStatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServerStat");
+                });
+
             modelBuilder.Entity("KavitaStats.Entities.V3.RelationshipStat", b =>
                 {
                     b.HasOne("KavitaStats.Entities.V3.ServerStat", "ServerStat")
@@ -522,6 +582,8 @@ namespace KavitaStats.Data.Migrations.V3
             modelBuilder.Entity("KavitaStats.Entities.V3.ServerStat", b =>
                 {
                     b.Navigation("Libraries");
+
+                    b.Navigation("MediaErrors");
 
                     b.Navigation("Relationships");
 

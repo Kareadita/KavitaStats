@@ -6,6 +6,7 @@ using KavitaStats.Attributes;
 using KavitaStats.Data;
 using KavitaStats.DTOs.V3;
 using KavitaStats.Entities;
+using KavitaStats.Entities.Enum;
 using KavitaStats.Entities.V3;
 using KavitaStats.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -59,6 +60,7 @@ public class StatsV3Controller : BaseApiController
             .Include(s => s.Libraries)
             .Include(s => s.Relationships)
             .Include(s => s.Users)
+            .Include(s => s.MediaErrors)
             .AsSplitQuery()
             .FirstOrDefaultAsync(s => s.InstallId == dto.InstallId);
         
@@ -111,7 +113,7 @@ public class StatsV3Controller : BaseApiController
         existingRecord.EncodeMediaAs = dto.EncodeMediaAs;
         existingRecord.LastReadTime = dto.LastReadTime;
         existingRecord.ActiveKavitaPlusSubscription = dto.ActiveKavitaPlusSubscription;
-        existingRecord.UsingRestrictedProfiles = dto.UsingRestrictedProfiles;
+        existingRecord.UsingRestrictedProfiles = dto.Users.Any(u => u.AgeRestriction.AgeRating != AgeRating.NotApplicable);
         existingRecord.MatchedMetadataEnabled = dto.MatchedMetadataEnabled;
         existingRecord.OidcEnabled = dto.OidcEnabled;
         
@@ -132,7 +134,27 @@ public class StatsV3Controller : BaseApiController
                 LastScanned = libraryDto.LastScanned,
                 NumberOfFolders = libraryDto.NumberOfFolders,
                 FileTypes = libraryDto.FileTypes.ToList(),
-                EnabledMetadata = libraryDto.EnabledMetadata
+                EnabledMetadata = libraryDto.EnabledMetadata,
+                FolderWatchMode = libraryDto.FolderWatchMode,
+                LastScanDurationMs = libraryDto.LastScanDurationMs,
+                LastScanFolderCount = libraryDto.LastScanFolderCount,
+                LastScanListMs = libraryDto.LastScanListMs,
+                LastScanWalkMs = libraryDto.LastScanWalkMs,
+                LastScanParseMs = libraryDto.LastScanParseMs,
+                MultiFileEpubChapterCount = libraryDto.MultiFileEpubChapterCount
+            });
+        }
+
+        existingRecord.TotalMediaErrors = dto.MediaErrors?.Sum(e => e.Count);
+        existingRecord.MediaErrors ??= new List<MediaErrorStat>();
+        existingRecord.MediaErrors.Clear();
+        foreach (var mediaErrorDto in dto.MediaErrors ?? [])
+        {
+            existingRecord.MediaErrors.Add(new MediaErrorStat
+            {
+                Reason = mediaErrorDto.Reason,
+                Count = mediaErrorDto.Count,
+                DismissedCount = mediaErrorDto.DismissedCount
             });
         }
         

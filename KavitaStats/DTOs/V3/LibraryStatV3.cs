@@ -40,4 +40,12 @@ public class LibraryStatV3
     /// Number of folders the library has
     /// </summary>
     public int NumberOfFolders { get; set; }
+    public FolderWatchMode? FolderWatchMode { get; set; }
+    public long? LastScanDurationMs { get; set; }
+    public int? LastScanFolderCount { get; set; }
+    public long? LastScanListMs { get; set; }
+    public long? LastScanWalkMs { get; set; }
+    public long? LastScanParseMs { get; set; }
+    /// <remarks>Counted for https://github.com/Kareadita/Kavita/issues/5007</remarks>
+    public int? MultiFileEpubChapterCount { get; set; }
 }

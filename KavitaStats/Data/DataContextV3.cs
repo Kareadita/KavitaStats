@@ -25,6 +25,7 @@ public sealed class DataContextV3 : DbContext
     public DbSet<InstallLifecycle> InstallLifecycle { get; set; }
     public DbSet<KavitaPlusPeriod> KavitaPlusPeriod { get; set; }
     public DbSet<SnapshotVersionCount> SnapshotVersionCount { get; set; }
+    public DbSet<MediaErrorStat> MediaErrorStat { get; set; }
 
     public DataContextV3(DbContextOptions options) : base(options)
     {
@@ -62,6 +63,12 @@ public sealed class DataContextV3 : DbContext
             .HasOne(u => u.ServerStat)
             .WithMany(s => s.Users)
             .HasForeignKey(u => u.ServerStatId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<MediaErrorStat>()
+            .HasOne(e => e.ServerStat)
+            .WithMany(s => s.MediaErrors)
+            .HasForeignKey(e => e.ServerStatId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // No navigation on HistoricalSnapshot: get_overview returns the entity as is

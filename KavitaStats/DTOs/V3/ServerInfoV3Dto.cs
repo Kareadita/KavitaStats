@@ -107,6 +107,10 @@ public class ServerInfoV3Dto
     /// Everything around Series Relationships between series
     /// </summary>
     public IList<RelationshipStatV3> Relationships { get; set; }
+    /// <summary>
+    /// Media errors by reason. Null from a Kavita that does not send them, empty when there are none
+    /// </summary>
+    public IList<MediaErrorStatV3>? MediaErrors { get; set; }
     #endregion
 
     #region Server
