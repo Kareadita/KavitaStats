@@ -24,6 +24,7 @@ public static class ApplicationServiceExtensions
             services.AddScoped<IServerStatRepository, ServerStatRepository>();
             services.AddScoped<ITaskScheduler, TaskScheduler>();
             services.AddScoped<HistoricalSnapshotService>();
+            services.AddScoped<InstallLifecycleService>();
             services.AddScoped<IUiStatsCacheService, UiStatsCacheService>();
 
             services.AddLogging(config);

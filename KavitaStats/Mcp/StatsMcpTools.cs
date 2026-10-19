@@ -30,7 +30,11 @@ public class StatsMcpTools(ReadOnlySqlRunner sqlRunner, DataContextV3 dataContex
         v3 tables:
         - ServerStat: one row per Kavita install, unique on InstallId. The row is overwritten each time the install reports in, so it is the latest state, not history.
         - UserStat, LibraryStat, RelationshipStat: child rows of ServerStat via ServerStatId, replaced on every report. UserStat is one row per user account on that install.
-        - HistoricalSnapshot: weekly totals of installs and users, the only time series.
+        - HistoricalSnapshot: weekly totals of installs and users. Columns from ActiveInstalls on are NULL before October 2026. ActiveInstalls is the kavitareader.com number (v2 and v3, opted-out included); the other new columns are v3 without opted-out installs. ChurnedInstalls counts installs whose last report was 30 to 37 days before the snapshot.
+        - SnapshotVersionCount: per HistoricalSnapshot (HistoricalSnapshotId), active v3 installs per KavitaVersion.
+        - InstallLifecycle: one row per v3 install, unique on InstallId, never deleted by the yearly cleanup, so it covers installs ServerStat no longer has. FirstSeen and LastSeen are the first and last report. Seeded = 1 rows were created from ServerStat in October 2026: their FirstSeen is ServerStat.Created, the first v3 report (v3 began 2024-12-07), not the real first report.
+        - KavitaPlusPeriod: one row per Kavita+ subscription period of an install (InstallLifecycleId). EndedOn NULL means still subscribed. CancellingOn is when the subscription was set to cancel while still active. IsFree is NULL when unknown. Seeded = 1 periods started on or before StartedOn, not on it.
+          EndReason: WentSilent = the install stopped reporting for 30 days with Kavita+ on (EndedOn is its last report; it reopens if the install returns), OptedOut = the same but the install opted out, LicenseRemoved = the admin removed the license, Unknown = a Kavita without the KavitaPlusState field reported the flag off (expiry, removal or an outage), PlanChanged = free or paid changed and the next period starts the same day, so it is not churn.
 
         Conventions:
         - LastModified on ServerStat is the last time the install reported. The kavitareader.com site counts an install as "active" when LastModified is within the last 10 days.

@@ -23,6 +23,15 @@ namespace KavitaStats.Data.Migrations.V3
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("ActiveInstalls")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ActiveUsers")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ChurnedInstalls")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
@@ -30,6 +39,15 @@ namespace KavitaStats.Data.Migrations.V3
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("DeltaUsers")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("InstallsWithContent")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("NewInstalls")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("OptedOutInstalls")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("UniqueInstalls")
@@ -44,6 +62,100 @@ namespace KavitaStats.Data.Migrations.V3
                         .IsUnique();
 
                     b.ToTable("HistoricalSnapshot");
+                });
+
+            modelBuilder.Entity("KavitaStats.Entities.SnapshotVersionCount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HistoricalSnapshotId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("KavitaVersion")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HistoricalSnapshotId");
+
+                    b.ToTable("SnapshotVersionCount");
+                });
+
+            modelBuilder.Entity("KavitaStats.Entities.V3.InstallLifecycle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("EverHadSeries")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("FirstSeen")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("InitialInstallDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("InitialVersion")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("InstallId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastSeen")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastVersion")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Seeded")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InstallId")
+                        .IsUnique();
+
+                    b.ToTable("InstallLifecycle");
+                });
+
+            modelBuilder.Entity("KavitaStats.Entities.V3.KavitaPlusPeriod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("CancellingOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("EndReason")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("EndedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("InstallLifecycleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool?>("IsFree")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Seeded")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("StartedOn")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InstallLifecycleId");
+
+                    b.ToTable("KavitaPlusPeriod");
                 });
 
             modelBuilder.Entity("KavitaStats.Entities.V3.LibraryStat", b =>
@@ -338,6 +450,26 @@ namespace KavitaStats.Data.Migrations.V3
                     b.ToTable("UserStat");
                 });
 
+            modelBuilder.Entity("KavitaStats.Entities.SnapshotVersionCount", b =>
+                {
+                    b.HasOne("KavitaStats.Entities.HistoricalSnapshot", null)
+                        .WithMany()
+                        .HasForeignKey("HistoricalSnapshotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("KavitaStats.Entities.V3.KavitaPlusPeriod", b =>
+                {
+                    b.HasOne("KavitaStats.Entities.V3.InstallLifecycle", "InstallLifecycle")
+                        .WithMany("KavitaPlusPeriods")
+                        .HasForeignKey("InstallLifecycleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InstallLifecycle");
+                });
+
             modelBuilder.Entity("KavitaStats.Entities.V3.LibraryStat", b =>
                 {
                     b.HasOne("KavitaStats.Entities.V3.ServerStat", "ServerStat")
@@ -380,6 +512,11 @@ namespace KavitaStats.Data.Migrations.V3
                         .IsRequired();
 
                     b.Navigation("ServerStat");
+                });
+
+            modelBuilder.Entity("KavitaStats.Entities.V3.InstallLifecycle", b =>
+                {
+                    b.Navigation("KavitaPlusPeriods");
                 });
 
             modelBuilder.Entity("KavitaStats.Entities.V3.ServerStat", b =>

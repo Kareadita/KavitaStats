@@ -127,6 +127,14 @@ public class ServerInfoV3Dto
     /// </summary>
     public bool ActiveKavitaPlusSubscription { get; set; }
     /// <summary>
+    /// Null when the Kavita version does not send it, in which case <see cref="ActiveKavitaPlusSubscription"/> is used
+    /// </summary>
+    public KavitaPlusState? KavitaPlusState { get; set; }
+    /// <summary>
+    /// Kavita+ effective price is 0, after coupons
+    /// </summary>
+    public bool? KavitaPlusIsFree { get; set; }
+    /// <summary>
     ///  Is OIDC enabled
     /// </summary>
     public bool OidcEnabled { get; set; }

@@ -22,7 +22,10 @@ public sealed class DataContextV3 : DbContext
     public DbSet<LibraryStat> LibraryStat { get; set; }
     public DbSet<UserAgeRestriction> UserAgeRestriction { get; set; }
     public DbSet<HistoricalSnapshot> HistoricalSnapshot { get; set; }
-        
+    public DbSet<InstallLifecycle> InstallLifecycle { get; set; }
+    public DbSet<KavitaPlusPeriod> KavitaPlusPeriod { get; set; }
+    public DbSet<SnapshotVersionCount> SnapshotVersionCount { get; set; }
+
     public DataContextV3(DbContextOptions options) : base(options)
     {
         ChangeTracker.Tracked += OnEntityTracked;
@@ -60,7 +63,14 @@ public sealed class DataContextV3 : DbContext
             .WithMany(s => s.Users)
             .HasForeignKey(u => u.ServerStatId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
+        // No navigation on HistoricalSnapshot: get_overview returns the entity as is
+        builder.Entity<SnapshotVersionCount>()
+            .HasOne<HistoricalSnapshot>()
+            .WithMany()
+            .HasForeignKey(v => v.HistoricalSnapshotId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         var stringListComparer = new ValueComparer<List<string>>(
             (c1, c2) => c1 != null && c2 != null && c1.SequenceEqual(c2),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),

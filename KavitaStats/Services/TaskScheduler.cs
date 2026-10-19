@@ -39,6 +39,9 @@ public class TaskScheduler : ITaskScheduler
         
         RecurringJob.AddOrUpdate<HistoricalSnapshotService>("historical-snapshot", job => job.TakeHistoricalSnapshot(),
             Cron.Weekly, RecurringJobOptions);
+
+        RecurringJob.AddOrUpdate<InstallLifecycleService>("close-silent-kavita-plus-periods",
+            job => job.CloseSilentPeriodsAsync(), Cron.Daily, RecurringJobOptions);
     }
 
     public async Task CleanupRecords()

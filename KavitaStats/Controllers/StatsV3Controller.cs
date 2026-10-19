@@ -7,6 +7,7 @@ using KavitaStats.Data;
 using KavitaStats.DTOs.V3;
 using KavitaStats.Entities;
 using KavitaStats.Entities.V3;
+using KavitaStats.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -23,14 +24,17 @@ public class StatsV3Controller : BaseApiController
     private readonly ILogger<StatsV3Controller> _logger;
     private readonly DataContextV3 _context;
     private readonly DataContext _v2Context;
+    private readonly InstallLifecycleService _installLifecycleService;
     // Kavita's v0.1 GitHub release
     private static readonly DateTime KavitaFirstReleaseDate = new(2021, 1, 20);
 
-    public StatsV3Controller(ILogger<StatsV3Controller> logger, DataContextV3 context, DataContext v2Context)
+    public StatsV3Controller(ILogger<StatsV3Controller> logger, DataContextV3 context, DataContext v2Context,
+        InstallLifecycleService installLifecycleService)
     {
         _logger = logger;
         _context = context;
         _v2Context = v2Context;
+        _installLifecycleService = installLifecycleService;
     }
 
     [HttpPost("opt-out")]
@@ -182,10 +186,11 @@ public class StatsV3Controller : BaseApiController
                 UserId = userDto.UserId,
             });
         }
-        
+
+        await _installLifecycleService.RecordReportAsync(existingRecord, dto.KavitaPlusState, dto.KavitaPlusIsFree);
 
         await _context.SaveChangesAsync();
-        
+
         return Ok();
     }
 }
