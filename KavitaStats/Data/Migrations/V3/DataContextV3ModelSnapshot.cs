@@ -176,6 +176,9 @@ namespace KavitaStats.Data.Migrations.V3
                     b.Property<string>("FileTypes")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("FolderWatchMethod")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("FolderWatchMode")
                         .HasColumnType("INTEGER");
 
@@ -289,6 +292,9 @@ namespace KavitaStats.Data.Migrations.V3
 
                     b.Property<string>("DotnetVersion")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool?>("EnableFolderWatching")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("EncodeMediaAs")
                         .HasColumnType("INTEGER");

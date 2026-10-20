@@ -42,6 +42,7 @@ public class ServerStat : IHasDate
     public int MaxChaptersInASeries { get; set; }
 
     public bool OpdsEnabled { get; set; }
+    public bool? EnableFolderWatching { get; set; }
     public EncodeFormat EncodeMediaAs { get; set; }
     public DateTime LastReadTime { get; set; }
     public bool ActiveKavitaPlusSubscription { get; set; }

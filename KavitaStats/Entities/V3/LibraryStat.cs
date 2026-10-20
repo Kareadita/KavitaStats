@@ -19,6 +19,7 @@ public class LibraryStat
     public DateTime LastScanned { get; set; }
     public int NumberOfFolders { get; set; }
     public FolderWatchMode? FolderWatchMode { get; set; }
+    public FolderWatchMethod? FolderWatchMethod { get; set; }
     /// <summary>
     /// Last non-forced library scan, null when not reported or no library scan since the upgrade
     /// </summary>

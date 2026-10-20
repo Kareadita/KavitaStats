@@ -41,6 +41,7 @@ public class LibraryStatV3
     /// </summary>
     public int NumberOfFolders { get; set; }
     public FolderWatchMode? FolderWatchMode { get; set; }
+    public FolderWatchMethod? FolderWatchMethod { get; set; }
     public long? LastScanDurationMs { get; set; }
     public int? LastScanFolderCount { get; set; }
     public long? LastScanListMs { get; set; }
