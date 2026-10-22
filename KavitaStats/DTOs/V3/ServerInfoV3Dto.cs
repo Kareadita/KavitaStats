@@ -119,6 +119,10 @@ public class ServerInfoV3Dto
     /// </summary>
     public bool OpdsEnabled { get; set; }
     /// <summary>
+    /// Is the server's folder watching switch on
+    /// </summary>
+    public bool? EnableFolderWatching { get; set; }
+    /// <summary>
     /// The encoding the server is using to save media
     /// </summary>
     public EncodeFormat EncodeMediaAs { get; set; }

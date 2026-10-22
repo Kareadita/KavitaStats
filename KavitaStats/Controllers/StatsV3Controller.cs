@@ -110,6 +110,7 @@ public class StatsV3Controller : BaseApiController
 
         // Update Server properties
         existingRecord.OpdsEnabled = dto.OpdsEnabled;
+        existingRecord.EnableFolderWatching = dto.EnableFolderWatching;
         existingRecord.EncodeMediaAs = dto.EncodeMediaAs;
         existingRecord.LastReadTime = dto.LastReadTime;
         existingRecord.ActiveKavitaPlusSubscription = dto.ActiveKavitaPlusSubscription;
@@ -136,6 +137,7 @@ public class StatsV3Controller : BaseApiController
                 FileTypes = libraryDto.FileTypes.ToList(),
                 EnabledMetadata = libraryDto.EnabledMetadata,
                 FolderWatchMode = libraryDto.FolderWatchMode,
+                FolderWatchMethod = libraryDto.FolderWatchMethod,
                 LastScanDurationMs = libraryDto.LastScanDurationMs,
                 LastScanFolderCount = libraryDto.LastScanFolderCount,
                 LastScanListMs = libraryDto.LastScanListMs,

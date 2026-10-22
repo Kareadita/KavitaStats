@@ -66,6 +66,8 @@ public class StatsV3ControllerTests : AbstractDbTest
         Assert.Null(stored.LastScanDurationMs);
         Assert.Null(stored.MultiFileEpubChapterCount);
         Assert.Null(stored.FolderWatchMode);
+        Assert.Null(stored.FolderWatchMethod);
+        Assert.Null(server.EnableFolderWatching);
         Assert.Null(server.TotalMediaErrors);
         Assert.Empty(server.MediaErrors);
         Assert.False(server.UsingRestrictedProfiles);
